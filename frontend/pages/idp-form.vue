@@ -682,11 +682,13 @@
             Assessment), provide more detailed information here.
           </div>
           <div class="table-wrapper">
-            <table class="dynamic-table">
+            <table class="dynamic-table proact-table">
               <thead>
                 <tr>
                   <th style="width: 40px">No.</th>
-                  <th style="background: var(--navy); opacity: 0.92">
+                  <th
+                    style="min-width: 200px; background: var(--navy); opacity: 0.92"
+                  >
                     Target Competency / Skill
                     <span
                       style="font-size: 10px; font-weight: 400; opacity: 0.8"
@@ -696,17 +698,26 @@
                   <th>Training / LeaD Intervention</th>
                   <th
                     style="
-                      width: 70px;
+                      width: 180px;
                       white-space: normal;
                       word-break: break-word;
                       font-size: 10px;
                     "
                   >
-                    Mode of Activity
+                      Mode    of  Activity     
                   </th>
-                  <th>Trainer / Provider</th>
-                  <th style="width: 80px">Target Timeline</th>
-                  <th style="width: 40px"></th>
+                  <th style="min-width: 100px">   Trainer / Provider    </th>
+                  <th
+                    style="
+                      width: 100px;
+                      white-space: normal;
+                      word-break: break-word;
+                      font-size: 10px;
+                    "
+                  >
+                    Target Timeline   
+                  </th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -780,7 +791,7 @@
                     <input
                       type="text"
                       v-model="proactRows[idx].trainerProvider"
-                      placeholder="Optional"
+                      placeholder="e.g. HRMS"
                     />
                   </td>
                   <td>
@@ -5292,6 +5303,15 @@ textarea {
   padding: 6px 10px;
   font-size: 13px;
   border-radius: 6px;
+}
+.proact-table td input,
+.proact-table td select,
+.proact-table td textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0;
 }
 .priority-num {
   width: 36px;
