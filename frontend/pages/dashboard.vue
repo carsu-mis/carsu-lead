@@ -5968,7 +5968,7 @@ async function downloadPDF(type, refId, name) {
 const regMenuOpen = ref(null);
 const { user: authUser, fetchMe } = useAuth();
 const isMasterAdmin = computed(
-  () => authUser.value?.email === "yssahjulianah.barcial@carsu.edu.ph",
+  () => authUser.value?.email === "altheaguila.gorres@carsu.edu.ph",
 );
 const regMenuOpenUp = ref(false);
 
