@@ -6047,7 +6047,7 @@ async function downloadPDF(type, refId, name) {
   try {
     toast("Generating PDF…");
     const url = `${API}/${type}/${encodeURIComponent(refId)}/pdf`;
-    const res = await authfetch(url.at);
+    const res = await authFetch(url);
     if (!res.ok) {
       toast("PDF generation failed.", "error");
       return;
@@ -6115,7 +6115,7 @@ async function saveHR() {
     return;
   }
   try {
-    await authfetch(`${API}/users`, {
+    await authFetch(`${API}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -6137,7 +6137,7 @@ async function saveHR() {
 async function removeHR(email, name) {
   if (!confirm(`Remove ${name || email} from the HR Registry?`)) return;
   try {
-    await authfetch(`${API}/users/${encodeURIComponent(email)}`, {
+    await authFetch(`${API}/users/${encodeURIComponent(email)}`, {
       method: "DELETE",
     });
     toast(`${name || email} removed.`, "success");
