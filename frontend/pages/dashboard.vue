@@ -5530,17 +5530,20 @@ function normalizeIDP(raw) {
     const yr = new Date(raw.submittedAt).getFullYear();
     if (!isNaN(yr)) yearCovered = String(yr);
   }
+  const u = raw.user || {};
   return {
     ...raw,
     yearCovered,
     status: (raw.status || "").toUpperCase(),
     employeeName:
-      [raw.firstName, raw.lastName].filter(Boolean).join(" ") ||
+      [u.firstName, u.lastName].filter(Boolean).join(" ") ||
       raw.nameOfPersonnel ||
+      u.email ||
       "",
-    email: raw.employeeEmail || "",
-    position: raw.currentPosition || "",
-    office: raw.collegeOfficeUnit || "",
+    email: u.email || raw.employeeEmail || "",
+    position: u.currentPosition || raw.currentPosition || "",
+    office: u.collegeOfficeUnit || raw.collegeOfficeUnit || "",
+    campus: u.campus || raw.campus || "",
     _competencyRows: competencyRows,
     _agapRows: agapRows,
     _proactRows: proactRows,
