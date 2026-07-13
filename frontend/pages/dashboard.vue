@@ -5568,16 +5568,28 @@ function normalizeLNA(raw) {
     const yr = new Date(raw.submittedAt).getFullYear();
     if (!isNaN(yr)) yearCovered = String(yr);
   }
+  const u = raw.user || {};
+  const headOfUnit =
+    u.headOfUnit ||
+    [u.headFirstName, u.headLastName].filter(Boolean).join(" ") ||
+    raw.headOfUnit ||
+    "";
   return {
     ...raw,
     yearCovered,
-    office: raw.office || raw.unitOfficCollege || "",
+    office:
+      u.officeAffiliation ||
+      u.collegeOfficeUnit ||
+      raw.office ||
+      raw.unitOfficCollege ||
+      "",
+    headOfUnit,
+    email: u.email || raw.email || "",
     _clusterSummary: safeArray(raw.clusterSummaryRaw ?? raw.clusterSummary),
     _dataSources: safeArray(raw.dataSourcesRaw ?? raw.dataSources),
     _insightRows: safeArray(raw.dataSourceInsights),
   };
 }
-
 const topCompetencyGaps = computed(() => {
   const freq = {};
   idps.value.forEach((r) => {
