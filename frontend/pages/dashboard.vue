@@ -123,7 +123,11 @@
             </div>
           </div>
           <!-- Offices Covered -->
-          <div class="ov-metric-card ov-mc-slate">
+           <div
+            class="ov-metric-card ov-mc-slate"
+            @click="toggleOv('lna-offices')"
+            :class="{ active: ovActive === 'lna-offices' }"
+          >
             <div class="ov-mc-icon">
               <svg viewBox="0 0 24 24">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -137,7 +141,11 @@
             </div>
           </div>
           <!-- LNA Workforce -->
-          <div class="ov-metric-card ov-mc-teal">
+          <div
+            class="ov-metric-card ov-mc-teal"
+            @click="toggleOv('lna-workforce')"
+            :class="{ active: ovActive === 'lna-workforce' }"
+          >
             <div class="ov-mc-icon">
               <svg viewBox="0 0 24 24">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -237,9 +245,9 @@
                 </tbody>
               </table>
             </div>
-            <!-- LNA drill -->
+           <!-- LNA drill (raw submissions) -->
             <div
-              v-if="ovActive.startsWith('lna')"
+              v-if="ovActive === 'lna-all'"
               class="tbl-wrap"
               style="border-radius: 0; border: none; box-shadow: none"
             >
@@ -294,6 +302,53 @@
                         View
                       </button>
                     </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- LNA drill (aggregated by office) -->
+            <div
+              v-if="ovActive === 'lna-offices' || ovActive === 'lna-workforce'"
+              class="tbl-wrap"
+              style="border-radius: 0; border: none; box-shadow: none"
+            >
+              <table class="dtbl">
+                <thead>
+                  <tr>
+                    <th
+                      v-for="(col, i) in ovLnaOfficeCols"
+                      :key="col"
+                      class="th-sortable"
+                      :class="{ 'th-sorted': sortState.ovLnaOffice.col === i }"
+                      @click="
+                        sortState.ovLnaOffice.col === i
+                          ? (sortState.ovLnaOffice.asc = !sortState.ovLnaOffice.asc)
+                          : ((sortState.ovLnaOffice.col = i),
+                            (sortState.ovLnaOffice.asc = true))
+                      "
+                    >
+                      {{ col
+                      }}<span class="sort-ind">{{
+                        sortState.ovLnaOffice.col === i
+                          ? sortState.ovLnaOffice.asc
+                            ? " ↑"
+                            : " ↓"
+                          : " ↕"
+                      }}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="!ovDrillRows.length" class="empty-row">
+                    <td colspan="4">No records found.</td>
+                  </tr>
+                  <tr v-for="r in ovDrillRows" :key="r.office">
+                    <td>{{ r.office }}</td>
+                    <td style="text-align: center">{{ r.count }}</td>
+                    <td style="text-align: center">
+                      {{ r.totalPersonnel.toLocaleString() }}
+                    </td>
+                    <td class="date-cell">{{ fmtDateTime(r.submittedAt) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -4392,6 +4447,7 @@ const sortState = reactive({
   lna: { col: -1, asc: true },
   ovIdp: { col: -1, asc: true },
   ovLna: { col: -1, asc: true },
+  ovLnaOffice: { col: -1, asc: true },
 });
 const ovActive = ref(null); // null | 'idp-all' | 'idp-pending' | 'idp-complete' | 'lna-all'
 
@@ -5557,6 +5613,8 @@ const ovDrillTitle = computed(() => {
     "idp-pending": `Pending IDPs — Awaiting Supervisor (${ovCounts.value.idpPending})`,
     "idp-complete": `Completed IDPs (${ovCounts.value.idpComplete})`,
     "lna-all": `All LNA Submissions (${ovFilteredLnas.value.length})`,
+    "lna-offices": `Offices Covered (${ovCounts.value.lnaOffices})`,
+    "lna-workforce": `Workforce Headcount (${lnaTotalWorkforce.value.toLocaleString()})`,
   };
   return map[ovActive.value] || "";
 });
@@ -5592,7 +5650,7 @@ function sortOvRows(rows, state, keys) {
       const bd = b[key] ? new Date(b[key]).getTime() : 0;
       return asc ? ad - bd : bd - ad;
     }
-    if (key === "totalPersonnel") {
+    if (key === "totalPersonnel" || key === "count") {
       return asc
         ? (a[key] || 0) - (b[key] || 0)
         : (b[key] || 0) - (a[key] || 0);
@@ -5623,6 +5681,38 @@ const ovLnaKeys = [
   "submittedAt",
 ];
 
+const ovLnaOfficeCols = [
+  "Office / Unit",
+  "LNAs Submitted",
+  "Total Personnel",
+  "Latest Submission",
+];
+const ovLnaOfficeKeys = ["office", "count", "totalPersonnel", "submittedAt"];
+
+const ovLnaByOffice = computed(() => {
+  const map = new Map();
+  for (const r of ovFilteredLnas.value) {
+    const office = r.office || "Unspecified";
+    if (!map.has(office)) {
+      map.set(office, {
+        office,
+        count: 0,
+        totalPersonnel: 0,
+        submittedAt: null,
+      });
+    }
+    const entry = map.get(office);
+    entry.count += 1;
+    entry.totalPersonnel += Number(r.totalPersonnel) || 0;
+    const ts = r.submittedAt ? new Date(r.submittedAt).getTime() : 0;
+    const prevTs = entry.submittedAt
+      ? new Date(entry.submittedAt).getTime()
+      : 0;
+    if (ts > prevTs) entry.submittedAt = r.submittedAt;
+  }
+  return Array.from(map.values());
+});
+
 const ovDrillRows = computed(() => {
   let rows = [];
   switch (ovActive.value) {
@@ -5640,20 +5730,26 @@ const ovDrillRows = computed(() => {
     case "lna-all":
       rows = ovFilteredLnas.value;
       break;
+    case "lna-offices":
+    case "lna-workforce":
+      rows = ovLnaByOffice.value;
+      break;
     default:
       return [];
   }
+  if (ovActive.value === "lna-offices" || ovActive.value === "lna-workforce")
+    return sortOvRows(rows, sortState.ovLnaOffice, ovLnaOfficeKeys);
   if (ovActive.value.startsWith("idp"))
     return sortOvRows(rows, sortState.ovIdp, ovIdpKeys);
   if (ovActive.value.startsWith("lna"))
     return sortOvRows(rows, sortState.ovLna, ovLnaKeys);
   return rows;
 });
-
 function toggleOv(key) {
   if (ovActive.value !== key) {
     sortState.ovIdp = { col: -1, asc: true };
     sortState.ovLna = { col: -1, asc: true };
+    sortState.ovLnaOffice = { col: -1, asc: true };
   }
   ovActive.value = ovActive.value === key ? null : key;
 }
