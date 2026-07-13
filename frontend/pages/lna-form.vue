@@ -1668,6 +1668,7 @@ definePageMeta({ middleware: ['auth'] });
 
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 
+const { user } = useAuth();
 const isSupervisor = computed(() => user.value?.isSupervisor);
 
 const config = useRuntimeConfig();
@@ -2694,6 +2695,7 @@ async function submitForm() {
   }
 
   const payload = {
+    userId: user.value?.id,
     submitterEmail: form.submitterEmail,
     campus: "CSU Main Campus",
     officeAffiliation: form.officeAffiliation,
@@ -2870,7 +2872,6 @@ function closeInterventionPortal() {
 
 onMounted(async () => {
   // ── Auto-fill from user profile ──────────────────────────────────
-  const { user } = useAuth();
   if (user.value) {
     form.submitterEmailPrefix =
       user.value.email?.replace("@carsu.edu.ph", "") || "";
