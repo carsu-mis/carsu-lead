@@ -361,6 +361,16 @@ export class PdfService {
   private buildLnaHtml(lna: Record<string, any>): string {
     const s = (v: any) => this.safe(v);
 
+    // ── Resolve office/personal fields from the linked user record ──────
+    // The Lna entity no longer stores these columns directly (see entity
+    // comment: "FK to user (replaces personnel/office fields)"), so they
+    // must be read off lna.user, with a flat-field fallback for safety.
+    const u = lna.user ?? {};
+    const campus = lna.campus || u.campus || '—';
+    const officeAffiliation = lna.officeAffiliation || u.officeAffiliation || '—';
+    const position = lna.position || u.currentPosition || u.designation || '—';
+    const submitterEmail = lna.submitterEmail || u.email || '—';
+
     const workforce = lna.workforceProfile ?? {};
     const core = lna.coreCompetencies ?? [];
     const leadership = lna.leadershipComps ?? [];
@@ -370,10 +380,17 @@ export class PdfService {
     const dataSources = lna.dataSourcesRaw ?? [];
     const insights = lna.dataSourceInsights ?? [];
     const interventions = lna.leadInterventions ?? [];
-    // office is now always sent with the correct key from the frontend
-    const officeName = lna.office ?? '';
+    // office: fall back to the user's collegeOfficeUnit/officeAffiliation
+    const officeName =
+      lna.office || u.collegeOfficeUnit || u.officeAffiliation || '';
     // Certification name: headOfUnit is the authoritative name field (raterName not in form)
-    const certName = lna.headOfUnit ?? '';
+    const certName =
+      lna.headOfUnit ||
+      u.headOfUnit ||
+      [u.firstName, u.middleInitial ? u.middleInitial + '.' : '', u.lastName]
+        .filter(Boolean)
+        .join(' ') ||
+      '';
 
     const submittedAt = lna.submittedAt
       ? new Date(lna.submittedAt).toLocaleDateString('en-PH', {
@@ -661,11 +678,12 @@ export class PdfService {
   <div class="section-header"><span class="section-num">H</span><h2>Office Information</h2></div>
   <div class="section-body">
     <div class="info-grid">
-      <div class="info-field"><div class="info-label">Campus</div><div class="info-value">${s(lna.campus)}</div></div>
-      <div class="info-field"><div class="info-label">Office Affiliation</div><div class="info-value">${s(lna.officeAffiliation)}</div></div>
+      <div class="info-field"><div class="info-label">Submitter Email</div><div class="info-value">${s(submitterEmail)}</div></div>
+      <div class="info-field"><div class="info-label">Campus</div><div class="info-value">${s(campus)}</div></div>
+      <div class="info-field"><div class="info-label">Office Affiliation</div><div class="info-value">${s(officeAffiliation)}</div></div>
       <div class="info-field span-2"><div class="info-label">Office / Unit / College</div><div class="info-value">${s(officeName)}</div></div>
-      <div class="info-field"><div class="info-label">Head of Unit</div><div class="info-value">${s(lna.headOfUnit)}</div></div>
-      <div class="info-field"><div class="info-label">Position / Designation</div><div class="info-value">${s(lna.position)}</div></div>
+      <div class="info-field"><div class="info-label">Head of Unit</div><div class="info-value">${s(certName)}</div></div>
+      <div class="info-field"><div class="info-label">Position / Designation</div><div class="info-value">${s(position)}</div></div>
       <div class="info-field"><div class="info-label">Year Covered</div><div class="info-value">${s(lna.yearCovered)}</div></div>
       <div class="info-field"><div class="info-label">Total Personnel in Your Office</div><div class="info-value">${s(lna.totalPersonnel)}</div></div>
       <div class="info-field span-2"><div class="info-label">Purpose</div><div class="info-value">${s(lna.purpose)}</div></div>

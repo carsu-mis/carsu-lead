@@ -5589,6 +5589,12 @@ function normalizeLNA(raw) {
       "",
     headOfUnit,
     email: u.email || raw.email || "",
+    // ── Fields that only live on the linked user record ──────────────
+    submitterEmail: u.email || raw.submitterEmail || raw.email || "",
+    campus: u.campus || raw.campus || "",
+    officeAffiliation: u.officeAffiliation || raw.officeAffiliation || "",
+    position: u.currentPosition || u.designation || raw.position || "",
+    designation: u.designation || raw.designation || "",
     _clusterSummary: safeArray(raw.clusterSummaryRaw ?? raw.clusterSummary),
     _dataSources: safeArray(raw.dataSourcesRaw ?? raw.dataSources),
     _insightRows: safeArray(raw.dataSourceInsights),
