@@ -2897,23 +2897,9 @@ onMounted(async () => {
     // (set on the Profile page), since they're reliable and not string-parsed.
     // Fall back to a previously-saved headOfUnit string only if no
     // supervisor info exists yet.
-    if (user.value.supervisorFirstName || user.value.supervisorLastName) {
-      form.headFirstName = user.value.supervisorFirstName || "";
-      form.headLastName = user.value.supervisorLastName || "";
-      form.headMiddleInitial = user.value.supervisorMiddleInitial || "";
-    } else {
-      const headFull = user.value.headOfUnit || "";
-      const headParts = headFull.trim().split(" ");
-      if (headParts.length >= 2) {
-        form.headLastName = headParts[headParts.length - 1];
-        form.headFirstName = headParts.slice(0, -1).join(" ");
-        form.headMiddleInitial = "";
-      } else {
-        form.headLastName = headFull;
-        form.headFirstName = headFull ? "N/A" : "";
-        form.headMiddleInitial = "";
-      }
-    }
+   form.headFirstName = user.value.firstName || "";
+form.headLastName = user.value.lastName || "";
+form.headMiddleInitial = user.value.middleInitial || "";
   }
 
   document.addEventListener("click", (e) => {

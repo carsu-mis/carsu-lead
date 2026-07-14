@@ -5569,11 +5569,15 @@ function normalizeLNA(raw) {
     if (!isNaN(yr)) yearCovered = String(yr);
   }
   const u = raw.user || {};
+
   const headOfUnit =
+    [u.firstName, u.middleInitial ? u.middleInitial + "." : "", u.lastName]
+      .filter(Boolean)
+      .join(" ") ||
     u.headOfUnit ||
-    [u.headFirstName, u.headLastName].filter(Boolean).join(" ") ||
     raw.headOfUnit ||
     "";
+
   return {
     ...raw,
     yearCovered,
