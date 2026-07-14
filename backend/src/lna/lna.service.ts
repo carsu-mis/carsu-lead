@@ -53,6 +53,7 @@ export class LnaService {
     const record = this.repo.create({
       refId,
       userId: data.userId ?? null,
+       submittedAt: new Date(),
       datePrepared: data.datePrepared ?? null,
       yearCovered: data.yearCovered ?? null,
       totalPersonnel: data.totalPersonnel ?? null,
