@@ -6339,6 +6339,7 @@ function fmtDate(v) {
         month: "short",
         day: "numeric",
         year: "numeric",
+        timeZone: "Asia/Manila",
       });
 }
 function fmtDateTime(v) {
@@ -6350,9 +6351,14 @@ function fmtDateTime(v) {
         month: "short",
         day: "numeric",
         year: "numeric",
+        timeZone: "Asia/Manila",
       }) +
         " " +
-        d.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+        d.toLocaleTimeString("en-PH", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Asia/Manila",
+        });
 }
 function statusBadgeClass(s) {
   const c = (s || "").toUpperCase();
