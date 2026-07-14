@@ -5578,8 +5578,8 @@ function normalizeLNA(raw) {
     ...raw,
     yearCovered,
     office:
-      u.officeAffiliation ||
       u.collegeOfficeUnit ||
+      u.officeAffiliation ||
       raw.office ||
       raw.unitOfficCollege ||
       "",

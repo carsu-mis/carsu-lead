@@ -2694,6 +2694,7 @@ async function submitForm() {
       selectedSources.push("Others: " + form.othersSourceText.trim());
   }
 
+  const { user } = useAuth();
   const payload = {
     userId: user.value?.id,
     submitterEmail: form.submitterEmail,
