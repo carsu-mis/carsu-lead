@@ -44,31 +44,32 @@ export function useAuth() {
     }
   }
 
-  async function tryRefresh() {
-    if (!import.meta.client) return;
-    const storedRefresh = localStorage.getItem("refreshToken");
-    if (!storedRefresh) {
-      logout();
-      return;
-    }
-    const config = useRuntimeConfig();
-    try {
-      const res = await fetch(`${config.public.apiBase}/auth/refresh`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken: storedRefresh }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setTokens(data);
-        await fetchMe();
-      } else {
-        logout();
-      }
-    } catch {
-      logout();
-    }
+ async function tryRefresh() {
+  if (!import.meta.client) return;
+  const storedRefresh = localStorage.getItem("refreshToken");
+  if (!storedRefresh) {
+    accessToken.value = null;
+    user.value = null;
+    return; // ← just clear state, don't redirect
   }
+  const config = useRuntimeConfig();
+  try {
+    const res = await fetch(`${config.public.apiBase}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: storedRefresh }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setTokens(data);
+      await fetchMe();
+    } else {
+      logout(); // real invalid-session case — still redirects, which is correct here
+    }
+  } catch {
+    logout();
+  }
+}
 
   async function logout() {
     if (import.meta.client) {
