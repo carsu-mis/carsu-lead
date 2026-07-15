@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: carsu_lead
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: carsu2026
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: carsu2026
+      DB_NAME: carsu_lead
+      JWT_SECRET: carsuLeadSuperSecret2026
+      FRONTEND_URL: http://localhost:3000
+      HR_EMAIL: guilagorres21@gmail.com
+      MAIL_USER: guilagorres21@gmail.com
+      MAIL_PASS: utowycsfwnzwptkh
+      MAIL_FROM: guilagorres21@gmail.com
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
