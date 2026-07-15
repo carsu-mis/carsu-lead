@@ -30,9 +30,13 @@
         />
       </div>
 
-      <button class="btn-primary" :disabled="loading" @click="login">
+    <button class="btn-primary" :disabled="loading" @click="login">
         {{ loading ? "Signing in…" : "Sign In" }}
       </button>
+
+      <p class="forgot-link">
+        <NuxtLink to="/forgot-password">Forgot password?</NuxtLink>
+      </p>
 
       <p class="switch-link">
         No account yet?
@@ -218,6 +222,18 @@ input[type="password"]:focus {
   text-decoration: none;
 }
 .switch-link a:hover {
+  text-decoration: underline;
+}
+.forgot-link {
+  text-align: right;
+  margin: 6px 0 20px;
+  font-size: 13px;
+}
+.forgot-link a {
+  color: #1a4d2e;
+  text-decoration: none;
+}
+.forgot-link a:hover {
   text-decoration: underline;
 }
 </style>
