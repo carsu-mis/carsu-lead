@@ -85,6 +85,7 @@
   "allowScripts": {
     "@nestjs/core@11.1.16": true,
     "puppeteer@24.39.0": true,
-    "unrs-resolver@1.11.1": true
+    "unrs-resolver@1.11.1": true,
+    "bcrypt@6.0.0": true
   }
 }
