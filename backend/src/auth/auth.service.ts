@@ -12,14 +12,19 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { User, UserRole } from '../users/user.entity';
 import { RefreshToken } from './refresh-token.entity';
+import { PasswordResetToken } from './password-reset-token.entity';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(RefreshToken) private tokenRepo: Repository<RefreshToken>,
+     @InjectRepository(PasswordResetToken)
+    private resetTokenRepo: Repository<PasswordResetToken>,
     private jwt: JwtService,
     private cfg: ConfigService,
+    private mail: MailService,
   ) {}
 
   // ── Register (email/password) ──────────────────────────────────────
@@ -63,6 +68,53 @@ export class AuthService {
     await this.tokenRepo.delete({ token });
     return { success: true };
   }
+
+  // ── Forgot password ─────────────────────────────────────────────────
+  async forgotPassword(email: string) {
+    const genericResponse = {
+      message: 'If that email is registered, a reset link has been sent.',
+    };
+
+    const user = await this.userRepo.findOne({ where: { email } });
+    if (!user) return genericResponse; // don't reveal whether the email exists
+
+    const token = uuid();
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 30);
+
+    await this.resetTokenRepo.save(
+      this.resetTokenRepo.create({ token, userId: user.id, expiresAt }),
+    );
+
+    const frontendUrl = this.cfg.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
+    const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
+    const name = user.firstName ? `${user.firstName} ${user.lastName ?? ''}`.trim() : user.email;
+
+    await this.mail.sendPasswordReset({ to: user.email, name, resetUrl });
+
+    return genericResponse;
+  }
+
+  // ── Reset password ──────────────────────────────────────────────────
+  async resetPassword(token: string, newPassword: string) {
+    const stored = await this.resetTokenRepo.findOne({ where: { token } });
+    if (!stored || stored.expiresAt < new Date()) {
+      throw new BadRequestException('Invalid or expired reset link.');
+    }
+
+    const user = await this.userRepo.findOne({ where: { id: stored.userId } });
+    if (!user) throw new BadRequestException('Invalid or expired reset link.');
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await this.userRepo.update(user.id, { password: hashed });
+
+    await this.resetTokenRepo.delete({ id: stored.id });
+    await this.tokenRepo.delete({ userId: user.id }); // logs out old sessions
+
+    return { success: true };
+  }
+
+
 
   // ── Internal: issue access + refresh tokens ────────────────────────
   private async issueTokens(user: User) {

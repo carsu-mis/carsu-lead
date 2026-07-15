@@ -451,4 +451,48 @@ export class MailService {
       );
     }
   }
+
+  // ── Sent to a user who requested a password reset ─────────────────────────
+  async sendPasswordReset(opts: { to: string; name: string; resetUrl: string }) {
+    try {
+      await this.mailer.sendMail({
+        to: opts.to,
+        subject: `[CarSU LeaD] Reset your password`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #ddd;border-radius:8px;overflow:hidden;">
+            <div style="background:#003300;padding:24px 32px;">
+              <h2 style="color:#ffcc00;margin:0;">CarSU LeaD System</h2>
+              <p style="color:#cce6cc;margin:4px 0 0;">Password Reset Request</p>
+            </div>
+            <div style="padding:28px 32px;">
+              <p>Dear <strong>${opts.name}</strong>,</p>
+              <p>We received a request to reset the password for your CarSU LeaD account. Click the button below to choose a new password. This link will expire in 30 minutes.</p>
+
+              <div style="text-align:center;margin:24px 0;">
+                <a href="${opts.resetUrl}"
+                   style="background:#003300;color:#ffcc00;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;">
+                  Reset Password
+                </a>
+              </div>
+
+              <p style="font-size:13px;color:#666;">Or copy this link into your browser:<br>
+                <a href="${opts.resetUrl}" style="color:#003300;">${opts.resetUrl}</a>
+              </p>
+
+              <p style="font-size:13px;color:#666;">If you didn't request this, you can safely ignore this email — your password will remain unchanged.</p>
+
+              <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+              <p style="font-size:12px;color:#999;">This is an automated message from the CarSU HRMS LeaD System. Please do not reply to this email.</p>
+              <p style="font-size:12px;color:#999;">Caraga State University — Office of Human Resource Management Services</p>
+            </div>
+          </div>
+        `,
+      });
+      this.logger.log(`Password reset email sent to ${opts.to}`);
+    } catch (err) {
+      this.logger.error(
+        `Failed to send password reset email to ${opts.to}: ${err.message}`,
+      );
+    }
+  }
 }
