@@ -70,7 +70,7 @@
             You have the right to access, correct, or request the deletion of
             your personal data. For any inquiries or concerns, you may contact
             the Human Resource Management Services (HRMS) at
-            <strong>yjbarcial@carsu.edu.ph</strong>.
+            <strong>hrmslandd@carsu.edu.ph</strong>.
           </p>
           <label class="privacy-checkbox">
             <input type="checkbox" v-model="privacyAgreed" />

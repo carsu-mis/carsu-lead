@@ -113,7 +113,7 @@ export class MailService {
     completedAt: string;
     pdfBuffer: Buffer;
   }) {
-    const hrEmail = process.env.HR_EMAIL ?? 'yjbarcial@gmail.com';
+    const hrEmail = process.env.HR_EMAIL ?? 'hrmslandd@carsu.edu.ph';
     try {
       await this.mailer.sendMail({
         to: hrEmail,
@@ -356,7 +356,7 @@ export class MailService {
     submittedAt: string;
     pdfBuffer: Buffer;
   }) {
-    const hrEmail = process.env.HR_EMAIL ?? 'yjbarcial@gmail.com';
+    const hrEmail = process.env.HR_EMAIL ?? 'hrmslandd@carsu.edu.ph';
     try {
       await this.mailer.sendMail({
         to: hrEmail,

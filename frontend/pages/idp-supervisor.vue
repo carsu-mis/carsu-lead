@@ -49,7 +49,7 @@
         </p>
         <p>
           For data privacy concerns, contact the Caraga State University HRMS at
-          <strong>yjbarcial@carsu.edu.ph</strong>.
+          <strong>hrmslandd@carsu.edu.ph</strong>.
         </p>
         <label class="privacy-checkbox">
           <input type="checkbox" v-model="privacyAgreed" />
