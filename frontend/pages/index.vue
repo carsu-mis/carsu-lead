@@ -559,7 +559,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-
+definePageMeta({ middleware: "auth" });
 const { isHrStaff, isSupervisor, user } = useAuth();
 console.log(
   "index isSupervisor:",
