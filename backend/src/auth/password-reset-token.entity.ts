@@ -1,6 +1,6 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   CreateDateColumn,
   ManyToOne,
@@ -10,8 +10,8 @@ import { User } from '../users/user.entity';
 
 @Entity('password_reset_tokens')
 export class PasswordResetToken {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+@PrimaryColumn('uuid')
+id: string;
 
   @Column({ unique: true })
   token: string;

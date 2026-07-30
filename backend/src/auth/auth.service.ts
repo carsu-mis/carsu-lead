@@ -83,8 +83,8 @@ export class AuthService {
     expiresAt.setMinutes(expiresAt.getMinutes() + 30);
 
     await this.resetTokenRepo.save(
-      this.resetTokenRepo.create({ token, userId: user.id, expiresAt }),
-    );
+  this.resetTokenRepo.create({ id: uuid(), token, userId: user.id, expiresAt }),
+);
 
     const frontendUrl = this.cfg.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
     const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
