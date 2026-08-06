@@ -88,71 +88,32 @@ export class IdpService {
   // ── Create ───────────────────────────────────────────────────────────────
 
   async create(data: Record<string, any>): Promise<Idp> {
-    console.log('CREATE PAYLOAD:', JSON.stringify(data, null, 2));
-
     const refId = await this.generateRefId();
     const supervisorToken = uuidv4();
 
-    // userId must be passed in from the controller (logged-in user)
-    const user = data.userId
-      ? await this.resolveUser(data.userId)
-      : data.employeeEmail
-        ? await this.userRepo.findOne({ where: { email: data.employeeEmail } })
-        : null;
-    console.log(
-      'USER FROM DB:',
-      JSON.stringify(
-        {
-          id: user?.id,
-          currentPosition: user?.currentPosition,
-          collegeOfficeUnit: user?.collegeOfficeUnit,
-        },
-        null,
-        2,
-      ),
-    );
-    // ── ADD THIS: persist profile fields from the form submission ──────────
-    if (user) {
-      const profileFields: (keyof User)[] = [
-        'firstName',
-        'lastName',
-        'middleInitial',
-        'campus',
-        'officeAffiliation',
-        'collegeOfficeUnit',
-        'collegeProgram',
-        'personnelType',
-        'educAttainment',
-        'educAttainmentSpec',
-        'currentPosition',
-        'designation',
-        'yearsInPosition',
-        'yearsInCSU',
-      ];
-      const profileUpdate: Partial<User> = {};
-      for (const field of profileFields) {
-        if (data[field] !== undefined) {
-          (profileUpdate as any)[field] = data[field];
-        }
-      }
-      if (Object.keys(profileUpdate).length > 0) {
-        await this.userRepo.update({ id: user.id }, profileUpdate);
-        // Reflect updates locally so emails use the fresh values
-        Object.assign(user, profileUpdate);
-      }
-    }
-
-    // Add this temporarily
-    console.log('userId received:', data.userId);
-    console.log('user found:', user);
-    console.log('currentPosition:', user?.currentPosition);
-    console.log('collegeOfficeUnit:', user?.collegeOfficeUnit);
-
+    // Login/profiles have been removed — there's no logged-in user to
+    // resolve anymore. userId stays null; every personnel/office field is
+    // taken directly from what the employee typed into the form.
     const record = this.repo.create({
       refId,
       supervisorToken,
       status: 'PENDING',
       userId: data.userId ?? null,
+      employeeEmail: data.employeeEmail ?? '',
+      campus: data.campus ?? '',
+      officeAffiliation: data.officeAffiliation ?? '',
+      collegeOfficeUnit: data.collegeOfficeUnit ?? '',
+      collegeProgram: data.collegeProgram ?? '',
+      nameOfPersonnel: data.nameOfPersonnel ?? '',
+      lastName: data.lastName ?? '',
+      firstName: data.firstName ?? '',
+      middleInitial: data.middleInitial ?? '',
+      educAttainment: data.educAttainment ?? '',
+      educAttainmentSpec: data.educAttainmentSpec ?? '',
+      currentPosition: data.currentPosition ?? '',
+      designation: data.designation ?? '',
+      yearsInPosition: data.yearsInPosition ?? null,
+      yearsInCSU: data.yearsInCSU ?? null,
       supervisorName: data.supervisorName ?? '',
       supervisorEmail: data.supervisorEmail ?? '',
       headerPurpose: data.headerPurpose ?? '',
@@ -160,14 +121,14 @@ export class IdpService {
       competencyRowsJson: JSON.stringify(data.competencyRows ?? []),
       agapRowsJson: JSON.stringify(data.agapRows ?? []),
       proactRowsJson: JSON.stringify(data.proactRows ?? []),
-      // datePrepared is submission-specific so keep it on the record
-      // if you still have that column; otherwise remove it
     });
 
     const saved = await this.repo.save(record);
 
-    const employeeName = user ? this.getEmployeeName(user) : '';
-    const employeeEmail = user?.email ?? '';
+    const employeeName =
+      saved.nameOfPersonnel ||
+      [saved.firstName, saved.lastName].filter(Boolean).join(' ');
+    const employeeEmail = saved.employeeEmail ?? '';
     const frontendBase = process.env.FRONTEND_URL ?? 'http://localhost:3000';
     const reviewUrl = `${frontendBase}/idp-supervisor?token=${saved.supervisorToken}`;
 
@@ -184,10 +145,10 @@ export class IdpService {
       this.mail.sendSupervisorNotification({
         to: saved.supervisorEmail,
         supervisorName: saved.supervisorName,
-        employeeName: data.nameOfPersonnel ?? employeeName,
+        employeeName: saved.nameOfPersonnel ?? employeeName,
         refId: saved.refId,
-        position: user?.currentPosition ?? data.currentPosition ?? '',
-        officeUnit: user?.collegeOfficeUnit ?? data.collegeOfficeUnit ?? '',
+        position: saved.currentPosition ?? '',
+        officeUnit: saved.collegeOfficeUnit ?? '',
         reviewUrl,
       });
 
@@ -343,14 +304,13 @@ export class IdpService {
     data: Partial<Idp>,
   ): Promise<Idp | null> {
     await this.repo.update({ refId }, { ...data, status: 'COMPLETE' });
-    const updated = await this.repo.findOne({
-      where: { refId },
-      relations: ['user'],
-    });
+    const updated = await this.repo.findOne({ where: { refId } });
     if (!updated) return null;
 
-    const employeeName = updated.user ? this.getEmployeeName(updated.user) : '';
-    const employeeEmail = updated.user?.email ?? '';
+    const employeeName =
+      updated.nameOfPersonnel ||
+      [updated.firstName, updated.lastName].filter(Boolean).join(' ');
+    const employeeEmail = updated.employeeEmail ?? '';
     const completedAt = new Date().toLocaleDateString('en-PH', {
       year: 'numeric',
       month: 'long',
@@ -371,10 +331,10 @@ export class IdpService {
       }
 
       this.mail.sendHrNotification({
-        employeeName: data.supervisorName ?? employeeName,
+        employeeName: employeeName || updated.supervisorName,
         refId: updated.refId,
-        position: updated.user?.currentPosition ?? '',
-        officeUnit:updated.user?.collegeOfficeUnit ?? '',
+        position: updated.currentPosition ?? '',
+        officeUnit: updated.collegeOfficeUnit ?? '',
         supervisorName: updated.supervisorName,
         completedAt,
         pdfBuffer,

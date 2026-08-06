@@ -32,7 +32,7 @@
       </template>
 
       <p class="switch-link">
-        <NuxtLink to="/login">Back to Sign In</NuxtLink>
+       <NuxtLink to="/">Back to Home</NuxtLink>
       </p>
     </div>
   </div>

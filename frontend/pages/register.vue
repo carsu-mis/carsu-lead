@@ -40,7 +40,7 @@
 
       <p class="switch-link">
         Already have an account?
-        <NuxtLink to="/login">Sign in</NuxtLink>
+        <NuxtLink to="/">Back to Home</NuxtLink>
       </p>
     </div>
   </div>

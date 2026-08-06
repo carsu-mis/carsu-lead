@@ -146,81 +146,157 @@
           </div>
         </div>
         <div class="section-body">
-          <!-- Profile auto-fill notice -->
-          <div
-            style="
-              background: #f0f7f3;
-              border-left: 3px solid #1a4d2e;
-              padding: 10px 16px;
-              border-radius: 0 8px 8px 0;
-              font-size: 13px;
-              color: #2d6a3f;
-              margin-bottom: 20px;
-            "
-          >
-            Office information is auto-filled from your profile and cannot be
-            edited here.
-            <a
-              href="/profile"
-              style="color: #1a4d2e; font-weight: 700; margin-left: 4px"
-              >Edit in Profile Settings →</a
-            >
-          </div>
-
-          <!-- Submitter Email — locked -->
+          <!-- Submitter Email -->
           <div class="field-grid field-grid-2" style="margin-bottom: 18px">
             <div class="field-group span-2">
-              <label>Your CarSU Email Address</label>
-              <div class="static-value">
-                {{ form.submitterEmailPrefix }}@carsu.edu.ph
+              <label>Your CarSU Email Address <span class="req">*</span></label>
+              <div class="static-value" style="display: flex; align-items: center; padding: 0 14px">
+                <input
+                  v-model="form.submitterEmailPrefix"
+                  type="text"
+                  placeholder="juan.delacruz"
+                  style="border: none; background: transparent; padding: 10px 0; flex: 1"
+                />@carsu.edu.ph
               </div>
             </div>
           </div>
 
-          <!-- Campus — locked -->
+          <!-- Campus -->
           <div class="field-group" style="margin-bottom: 20px">
             <label>Campus</label>
             <div class="static-value">CSU Main Campus</div>
           </div>
 
-          <!-- Office Affiliation — locked -->
+          <!-- Office Affiliation -->
           <div class="field-group" style="margin-bottom: 20px">
-            <label>Office Affiliation</label>
-            <div class="static-value">{{ form.officeAffiliation || "—" }}</div>
+            <label>Office Affiliation <span class="req">*</span></label>
+            <select v-model="form.officeAffiliation">
+              <option value="">Select…</option>
+              <option>OVPAF</option>
+              <option>OVPAA</option>
+              <option>OVPEO</option>
+              <option>OVPSAS</option>
+              <option>OVPRDIE</option>
+            </select>
           </div>
 
           <div class="field-grid field-grid-2" style="margin-bottom: 18px">
-            <!-- Unit / Office / College — locked -->
+            <!-- Unit / Office / College -->
             <div class="field-group span-2">
-              <label>Name of Unit / Office / College</label>
-              <div class="static-value">
-                {{ form.unitOfficeCollege || "—" }}
+              <label>Name of Unit / Office / College <span class="req">*</span></label>
+              <select v-model="form.unitOfficeCollege" :disabled="!form.officeAffiliation">
+                <option value="">Select…</option>
+                <option v-for="opt in collegeOfficeUnitOptions" :key="opt" :value="opt">
+                  {{ opt }}
+                </option>
+                <option value="__others__">Others (specify)</option>
+              </select>
+              <input
+                v-if="form.unitOfficeCollege === '__others__'"
+                v-model="form.unitOfficeCollegeOther"
+                type="text"
+                placeholder="Specify unit / office / college"
+                style="margin-top: 8px"
+              />
+            </div>
+
+            <!-- Program -->
+            <div v-if="isOVPAA && selectedCollegePrograms.length" class="field-group span-2">
+              <label>Program / Department</label>
+              <select v-model="form.collegeProgram">
+                <option value="">Select…</option>
+                <option v-for="p in selectedCollegePrograms" :key="p" :value="p">
+                  {{ p }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Head of Unit -->
+            <div class="field-group span-2">
+              <label>Head of Unit/Office/College <span class="req">*</span></label>
+              <div class="name-grid">
+                <div>
+                  <small class="field-hint">Last Name</small>
+                  <input
+                    v-model="form.headLastName"
+                    type="text"
+                    placeholder="DELA CRUZ"
+                    @input="form.headLastName = form.headLastName.toUpperCase()"
+                  />
+                </div>
+                <div>
+                  <small class="field-hint">First Name</small>
+                  <input
+                    v-model="form.headFirstName"
+                    type="text"
+                    placeholder="JUAN"
+                    @input="form.headFirstName = form.headFirstName.toUpperCase()"
+                  />
+                </div>
+                <div class="mi-col">
+                  <small class="field-hint">M.I.</small>
+                  <input
+                    v-model="form.headMiddleInitial"
+                    type="text"
+                    maxlength="1"
+                    placeholder="A"
+                    @input="form.headMiddleInitial = form.headMiddleInitial.toUpperCase()"
+                  />
+                </div>
               </div>
             </div>
 
-            <!-- Program — locked if present -->
-            <div v-if="form.collegeProgram" class="field-group span-2">
-              <label>Program / Department</label>
-              <div class="static-value">{{ form.collegeProgram }}</div>
-            </div>
-
-            <!-- Head of Unit — locked -->
-            <div class="field-group span-2">
-              <label>Head of Unit/Office/College</label>
-              <div class="static-value">{{ form.raterFullName || "—" }}</div>
-            </div>
-
-            <!-- Position — locked -->
+            <!-- Position -->
             <div class="field-group">
-              <label>Position</label>
-              <div class="static-value">{{ form.position || "—" }}</div>
+              <label>Position <span class="req">*</span></label>
+              <select v-model="form.position" :disabled="!positionOptions.length">
+                <option value="">Select…</option>
+                <option v-for="opt in positionOptions" :key="opt" :value="opt">
+                  {{ opt }}
+                </option>
+              </select>
             </div>
 
-            <!-- Designation — locked -->
+            <!-- Designation -->
             <div class="field-group">
-              <label>Designation</label>
-              <div class="static-value">{{ form.designation || "—" }}</div>
+              <label>Designation <span class="req">*</span></label>
+              <div class="checkbox-group">
+                <label
+                  class="checkbox-item"
+                  :class="{ checked: form.designationMode === 'na' }"
+                >
+                  <input
+                    type="radio"
+                    name="designationMode"
+                    value="na"
+                    v-model="form.designationMode"
+                    @change="form.designation = 'N/A'"
+                  />
+                  N/A
+                </label>
+                <label
+                  class="checkbox-item"
+                  :class="{ checked: form.designationMode === 'specify' }"
+                >
+                  <input
+                    type="radio"
+                    name="designationMode"
+                    value="specify"
+                    v-model="form.designationMode"
+                    @change="form.designation = ''"
+                  />
+                  Specify
+                </label>
+              </div>
+              <input
+                v-if="form.designationMode === 'specify'"
+                v-model="form.designation"
+                type="text"
+                placeholder="e.g. Director"
+                style="margin-top: 8px"
+              />
             </div>
+
 
             <!-- Year Covered — still editable -->
             <div class="field-group">
@@ -1664,7 +1740,7 @@
 </template>
 
 <script setup>
-definePageMeta({ middleware: ['auth'] });
+definePageMeta({});
 
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 
@@ -2625,19 +2701,19 @@ function validate() {
     }
   }
   if (!form.officeAffiliation) {
-    alert("Office affiliation missing. Please update your profile.");
+    alert("Office affiliation is required.");
     return false;
   }
   if (!form.unitOfficeCollege) {
-    alert("Office/unit missing. Please update your profile.");
+    alert("Office/unit is required.");
     return false;
   }
   if (!form.position) {
-    alert("Position missing. Please update your profile.");
+    alert("Position is required.");
     return false;
   }
   if (!form.raterFullName?.trim()) {
-    alert("Head of Unit name missing. Please update your profile.");
+    alert("Head of Unit name is required.");
     return false;
   }
   if (!form.purpose) {
@@ -2872,36 +2948,6 @@ function closeInterventionPortal() {
 }
 
 onMounted(async () => {
-  // ── Auto-fill from user profile ──────────────────────────────────
-  if (user.value) {
-    form.submitterEmailPrefix =
-      user.value.email?.replace("@carsu.edu.ph", "") || "";
-    form.officeAffiliation = user.value.officeAffiliation || "";
-    await nextTick();
-    form.unitOfficeCollege = user.value.collegeOfficeUnit || "";
-    form.collegeProgram = user.value.collegeProgram || "";
-    await nextTick();
-    form.position = user.value.currentPosition || "";
-
-    // ── Fix designation ──────────────────────────────────────
-    form.designation = user.value.designation || "";
-    form.designationMode =
-      user.value.designation === "N/A"
-        ? "na"
-        : user.value.designation
-          ? "specify"
-          : "na"; // ← default to 'na' so it's never empty
-
-    // ── Head of Unit = Supervisor = Rater (same person) ───────
-    // Prefer the structured supervisor fields from the person's profile
-    // (set on the Profile page), since they're reliable and not string-parsed.
-    // Fall back to a previously-saved headOfUnit string only if no
-    // supervisor info exists yet.
-   form.headFirstName = user.value.firstName || "";
-form.headLastName = user.value.lastName || "";
-form.headMiddleInitial = user.value.middleInitial || "";
-  }
-
   document.addEventListener("click", (e) => {
     if (interventionPortal.visible) {
       const portal = document.getElementById("intervention-portal");

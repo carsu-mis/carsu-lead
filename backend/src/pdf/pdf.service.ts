@@ -163,7 +163,7 @@ export class PdfService {
       <div class="ro-field"><div class="ro-label">Campus</div><div class="ro-value">${this.safe(campus)}</div></div>
 <div class="ro-field"><div class="ro-label">Office Affiliation</div><div class="ro-value">${this.safe(officeAffiliation)}</div></div>
 <div class="ro-field span-2"><div class="ro-label">College / Office / Unit</div><div class="ro-value">${this.safe(collegeOfficeUnit)}${collegeProgram ? ' — ' + this.safe(collegeProgram) : ''}</div></div>
-<div class="ro-field"><div class="ro-label">Name of Personnel</div><div class="ro-value">${this.safe(employeeName)}</div></div>
+<div class="ro-field span-2"><div class="ro-label">Name of Personnel</div><div class="ro-value">${this.safe(employeeName)}</div></div>
 <div class="ro-field span-2"><div class="ro-label">Highest Educational Attainment</div><div class="ro-value">${this.safe(educAttainment)}${educAttainmentSpec ? ' — ' + this.safe(educAttainmentSpec) : ''}</div></div>
 <div class="ro-field"><div class="ro-label">Current Position</div><div class="ro-value">${this.safe(currentPosition)}</div></div>
 <div class="ro-field"><div class="ro-label">Designation</div><div class="ro-value">${this.safe(designation)}</div></div>
@@ -361,15 +361,12 @@ export class PdfService {
   private buildLnaHtml(lna: Record<string, any>): string {
     const s = (v: any) => this.safe(v);
 
-    // ── Resolve office/personal fields from the linked user record ──────
-    // The Lna entity no longer stores these columns directly (see entity
-    // comment: "FK to user (replaces personnel/office fields)"), so they
-    // must be read off lna.user, with a flat-field fallback for safety.
-    const u = lna.user ?? {};
-    const campus = lna.campus || u.campus || '—';
-    const officeAffiliation = lna.officeAffiliation || u.officeAffiliation || '—';
-    const position = lna.position || u.currentPosition || u.designation || '—';
-    const submitterEmail = lna.submitterEmail || u.email || '—';
+    // Office/personal fields — the Lna entity stores these directly on the
+    // record now (see lna.entity.ts); no user relation to fall back to.
+    const campus = lna.campus || '—';
+    const officeAffiliation = lna.officeAffiliation || '—';
+    const position = [lna.position, lna.designation].filter(Boolean).join(' / ') || '—';
+    const submitterEmail = lna.submitterEmail || '—';
 
     const workforce = lna.workforceProfile ?? {};
     const core = lna.coreCompetencies ?? [];
@@ -380,17 +377,8 @@ export class PdfService {
     const dataSources = lna.dataSourcesRaw ?? [];
     const insights = lna.dataSourceInsights ?? [];
     const interventions = lna.leadInterventions ?? [];
-    // office: fall back to the user's collegeOfficeUnit/officeAffiliation
-    const officeName =
-      lna.office || u.collegeOfficeUnit || u.officeAffiliation || '';
-    // Certification name: headOfUnit is the authoritative name field (raterName not in form)
-    const certName =
-      lna.headOfUnit ||
-      u.headOfUnit ||
-      [u.firstName, u.middleInitial ? u.middleInitial + '.' : '', u.lastName]
-        .filter(Boolean)
-        .join(' ') ||
-      '';
+    const officeName = lna.office || '';
+    const certName = lna.headOfUnit || '';
 
     const submittedAt = lna.submittedAt
       ? new Date(lna.submittedAt).toLocaleDateString('en-PH', {
@@ -680,7 +668,7 @@ export class PdfService {
     <div class="info-grid">
       <div class="info-field"><div class="info-label">Submitter Email</div><div class="info-value">${s(submitterEmail)}</div></div>
       <div class="info-field"><div class="info-label">Campus</div><div class="info-value">${s(campus)}</div></div>
-      <div class="info-field"><div class="info-label">Office Affiliation</div><div class="info-value">${s(officeAffiliation)}</div></div>
+      <div class="info-field span-2"><div class="info-label">Office Affiliation</div><div class="info-value">${s(officeAffiliation)}</div></div>
       <div class="info-field span-2"><div class="info-label">Office / Unit / College</div><div class="info-value">${s(officeName)}</div></div>
       <div class="info-field"><div class="info-label">Head of Unit</div><div class="info-value">${s(certName)}</div></div>
       <div class="info-field"><div class="info-label">Position / Designation</div><div class="info-value">${s(position)}</div></div>

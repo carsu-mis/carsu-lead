@@ -19,13 +19,30 @@ export class Idp {
   @Column({ default: 'PENDING' })
   status: string;
 
-  // ── FK to user (replaces all personnel fields) ───────────────────
+  // ── FK to user (legacy — no longer populated; login/profiles removed) ──
   @Column({ nullable: true })
   userId: string;
 
   @ManyToOne(() => User, { nullable: true, eager: false })
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  // ── Personnel / office info (submitted directly on the form) ─────
+  @Column({ nullable: true }) employeeEmail: string;
+  @Column({ nullable: true }) campus: string;
+  @Column({ nullable: true }) officeAffiliation: string;
+  @Column({ nullable: true }) collegeOfficeUnit: string;
+  @Column({ nullable: true }) collegeProgram: string;
+  @Column({ nullable: true }) nameOfPersonnel: string;
+  @Column({ nullable: true }) lastName: string;
+  @Column({ nullable: true }) firstName: string;
+  @Column({ nullable: true }) middleInitial: string;
+  @Column({ nullable: true }) educAttainment: string;
+  @Column({ nullable: true }) educAttainmentSpec: string;
+  @Column({ nullable: true }) currentPosition: string;
+  @Column({ nullable: true }) designation: string;
+  @Column({ nullable: true, type: 'float' }) yearsInPosition: number;
+  @Column({ nullable: true, type: 'float' }) yearsInCSU: number;
 
   // ── Fields that remain submission-specific ───────────────────────
   @Column({ nullable: true }) supervisorName: string;

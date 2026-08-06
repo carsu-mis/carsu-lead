@@ -105,16 +105,10 @@
             Supervisor Review
           </button>
           <button
-            class="pill pill-orange"
-            :class="{ active: activeSection === 'lna' }"
-            :disabled="!isSupervisor"
-            :title="
-              isSupervisor
-                ? 'Only Heads of Unit can submit LNA forms. Contact HRMS to request access.'
-                : ''
-            "
-            @click="toggleSection('lna')"
-          >
+  class="pill pill-orange"
+  :class="{ active: activeSection === 'lna' }"
+  @click="toggleSection('lna')"
+>
             <span class="pill-icon">
               <svg viewBox="0 0 16 16" fill="none">
                 <rect
@@ -138,7 +132,6 @@
             LNA / USWAG
           </button>
           <button
-            v-if="isHrStaff"
             class="pill pill-green"
             :class="{ active: activeSection === 'dashboard' }"
             @click="toggleSection('dashboard')"
@@ -375,28 +368,7 @@
             <div class="sh-line"></div>
           </div>
           <div class="grid">
-            <!-- Locked state for non-supervisors -->
-            <div v-if="!isSupervisor" class="card card-locked">
-              <div class="card-bar bar-gold"></div>
-              <div class="card-icon icon-gold">🔒</div>
-              <div class="card-tag tag-gold">For Office Heads</div>
-              <h2 class="card-title">USWAG Plan — LNA Tool</h2>
-              <p class="card-desc">
-                This form is only accessible to designated
-                <strong>Heads of Unit</strong>. To request access, contact the
-                <strong>HRMS office</strong> at
-                <a href="mailto:hrms@carsu.edu.ph" class="help-link"
-                  >hrms@carsu.edu.ph</a
-                >
-                to have your account updated.
-              </p>
-              <div class="card-foot">
-                <span class="card-meta">Restricted access</span>
-                <span class="card-cta" style="color: #bbb; cursor: default"
-                  >Not Available</span
-                >
-              </div>
-            </div>
+            
             <NuxtLink to="/lna-form" class="card">
               <div class="card-bar bar-gold"></div>
               <div class="card-icon icon-gold">
@@ -559,14 +531,9 @@
 
 <script setup>
 import { ref, computed } from "vue";
-definePageMeta({ middleware: "auth" });
+definePageMeta({});
 const { isHrStaff, isSupervisor, user } = useAuth();
-console.log(
-  "index isSupervisor:",
-  isSupervisor.value,
-  "user:",
-  user.value?.email,
-);
+
 
 const activeSection = ref(null);
 

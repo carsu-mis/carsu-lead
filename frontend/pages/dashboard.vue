@@ -4295,7 +4295,6 @@
 
 <script setup>
 definePageMeta({
-  middleware: ["auth", "hr-staff"],
   ssr: false,
 });
 

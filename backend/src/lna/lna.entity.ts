@@ -14,13 +14,23 @@ export class Lna {
 
   @Column({ unique: true }) refId: string;
 
-  // ── FK to user (replaces personnel/office fields) ────────────────
+  // ── FK to user (legacy — no longer populated; login/profiles removed) ──
   @Column({ nullable: true })
   userId: string;
 
   @ManyToOne(() => User, { nullable: true, eager: false })
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  // ── Office / personnel info (submitted directly on the form) ─────
+  @Column({ nullable: true }) submitterEmail: string;
+  @Column({ nullable: true }) campus: string;
+  @Column({ nullable: true }) officeAffiliation: string;
+  @Column({ nullable: true }) office: string;
+  @Column({ nullable: true }) collegeProgram: string;
+  @Column({ nullable: true }) headOfUnit: string;
+  @Column({ nullable: true }) position: string;
+  @Column({ nullable: true }) designation: string;
 
   // ── Submission-specific fields ───────────────────────────────────
   @Column({ nullable: true }) datePrepared: string;

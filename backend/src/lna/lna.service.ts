@@ -45,15 +45,21 @@ export class LnaService {
   async create(data: Record<string, any>): Promise<Lna> {
     const refId = await this.generateRefId();
 
-    // Resolve the submitting user
-    const user = data.userId
-      ? await this.userRepo.findOne({ where: { id: data.userId } })
-      : null;
-
+    // Login/profiles have been removed — there's no logged-in user to
+    // resolve anymore. Every office/personnel field is taken directly
+    // from what the Head of Unit typed into the form.
     const record = this.repo.create({
       refId,
       userId: data.userId ?? null,
-       submittedAt: new Date(),
+      submittedAt: new Date(),
+      submitterEmail: data.submitterEmail ?? '',
+      campus: data.campus ?? '',
+      officeAffiliation: data.officeAffiliation ?? '',
+      office: data.office ?? '',
+      collegeProgram: data.collegeProgram ?? '',
+      headOfUnit: data.headOfUnit ?? '',
+      position: data.position ?? '',
+      designation: data.designation ?? '',
       datePrepared: data.datePrepared ?? null,
       yearCovered: data.yearCovered ?? null,
       totalPersonnel: data.totalPersonnel ?? null,
@@ -71,12 +77,9 @@ export class LnaService {
 
     const saved = await this.repo.save(record);
 
-    // ── Derive fields — prefer payload data, fall back to user relation ──
-    const submitterEmail = data.submitterEmail ?? user?.email ?? '';
-    const headOfUnit = data.headOfUnit ?? user?.headOfUnit ?? '';
-    const office =
-      data.office ?? user?.collegeOfficeUnit ?? user?.officeAffiliation ?? '';
-    const raterName = user?.raterName ?? '';
+    const submitterEmail = saved.submitterEmail ?? '';
+    const headOfUnit = saved.headOfUnit ?? '';
+    const office = saved.office ?? '';
 
     const submittedAt = new Date().toLocaleDateString('en-PH', {
       year: 'numeric',
@@ -85,12 +88,9 @@ export class LnaService {
     });
 
     try {
-      const pdfBuffer = await this.pdf.generateLnaPdf({
-        ...saved,
-        user,
-      } as any);
+      const pdfBuffer = await this.pdf.generateLnaPdf({ ...saved } as any);
 
-      this.mail.sendLnaHrNotification({
+      await this.mail.sendLnaHrNotification({
         refId: saved.refId,
         office,
         headOfUnit,
@@ -100,8 +100,8 @@ export class LnaService {
       });
 
       if (submitterEmail) {
-        // Confirmation to the rater/supervisor who submitted the LNA
-        this.mail.sendLnaSubmitterConfirmation({
+        // Confirmation to the rater/Head of Unit who submitted the LNA
+        await this.mail.sendLnaSubmitterConfirmation({
           to: submitterEmail,
           headOfUnit,
           refId: saved.refId,
@@ -109,17 +109,16 @@ export class LnaService {
           submittedAt,
           pdfBuffer,
         });
+      } else {
+        this.logger.warn(
+          `LNA ${saved.refId}: no submitterEmail on record — confirmation email skipped.`,
+        );
       }
     } catch (err) {
       this.logger.error(`LNA post-save email/PDF failed: ${err.message}`);
     }
 
-    return (
-      (await this.repo.findOne({
-        where: { refId: saved.refId },
-        relations: ['user'],
-      })) ?? saved
-    );
+    return saved;
   }
 
   // ── Read ─────────────────────────────────────────────────────────────────

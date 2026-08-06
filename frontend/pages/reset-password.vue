@@ -15,7 +15,7 @@
         <div class="success-msg">
           Your password has been updated. You can now sign in with your new password.
         </div>
-        <button class="btn-primary" @click="navigateTo('/login')">
+        <button class="btn-primary" @click="navigateTo('/')">
           Go to Sign In
         </button>
       </template>
