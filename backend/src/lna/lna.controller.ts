@@ -1,6 +1,9 @@
-import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { LnaService } from './lna.service';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('lna')
 export class LnaController {
@@ -11,6 +14,8 @@ export class LnaController {
     return this.lnaService.create(body);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'hr-staff')
   @Get()
   findAll() {
     return this.lnaService.findAll();

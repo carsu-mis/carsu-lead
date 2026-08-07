@@ -4296,6 +4296,7 @@
 <script setup>
 definePageMeta({
   ssr: false,
+  middleware: ["hr-staff"],
 });
 
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
@@ -6024,19 +6025,26 @@ async function loadDashboard() {
       authFetch(`${API}/users`, { signal: controller.signal }),
     ]);
 
-    if (!idpRes.ok || !lnaRes.ok || !hrRes.ok) {
+    // Only idp/lna are required for the dashboard stats. /users is
+    // admin-only on the backend, so hr-staff accounts legitimately get a
+    // 403 there — that must not block the idp/lna data from loading.
+    if (!idpRes.ok || !lnaRes.ok) {
       throw new Error(
-        `Server error: ${[idpRes, lnaRes, hrRes].find((r) => !r.ok)?.status}`,
+        `Server error: ${[idpRes, lnaRes].find((r) => !r.ok)?.status}`,
       );
     }
-    const [rawIdps, rawLnas, rawHr] = await Promise.all([
+    const [rawIdps, rawLnas] = await Promise.all([
       idpRes.json(),
       lnaRes.json(),
-      hrRes.json(),
     ]);
     idps.value = Array.isArray(rawIdps) ? rawIdps.map(normalizeIDP) : [];
     lnas.value = Array.isArray(rawLnas) ? rawLnas.map(normalizeLNA) : [];
-    hrUsers.value = Array.isArray(rawHr) ? rawHr : [];
+    if (hrRes.ok) {
+      const rawHr = await hrRes.json();
+      hrUsers.value = Array.isArray(rawHr) ? rawHr : [];
+    } else {
+      hrUsers.value = [];
+    }
     const now = new Date();
     lastUpdated.value = `Last updated: ${now.toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })} at ${now.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" })}`;
   } catch (err) {

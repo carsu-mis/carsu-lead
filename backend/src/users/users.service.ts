@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 import { User, UserRole } from './user.entity';
 
 @Injectable()
@@ -47,5 +49,32 @@ export class UsersService {
   async setRole(userId: string, role: UserRole) {
     await this.repo.update(userId, { role });
     return this.repo.findOne({ where: { id: userId } });
+  }
+
+  // ── Create a new Admin/HR-Staff account directly ─────────────────────
+  // Used by the HR Registry "Add User" flow. These accounts sign in via
+  // the passwordless /auth/hr-login (email only), so we still fill the
+  // password column with a random, never-shared hash purely to satisfy
+  // the NOT NULL constraint — it's never used to authenticate.
+  async createHrOrAdmin(
+    email: string,
+    role: UserRole.ADMIN | UserRole.HR_STAFF,
+    firstName?: string,
+    lastName?: string,
+  ) {
+    const existing = await this.repo.findOne({ where: { email } });
+    if (existing) {
+      throw new ConflictException('Email already in use.');
+    }
+    const randomPassword = await bcrypt.hash(uuid(), 10);
+    const user = this.repo.create({
+      email,
+      password: randomPassword,
+      role,
+      firstName,
+      lastName,
+      profileComplete: true,
+    });
+    return this.repo.save(user);
   }
 }

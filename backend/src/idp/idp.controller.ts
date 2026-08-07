@@ -10,9 +10,13 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { IdpService } from './idp.service';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('idp')
 export class IdpController {
@@ -30,6 +34,8 @@ export class IdpController {
 
   // ── HR dashboard ────────────────────────────────────────────────────────
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'hr-staff')
   @Get()
   findAll() {
     return this.idpService.findAll();

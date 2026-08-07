@@ -15,6 +15,11 @@ export class AuthController {
     return this.authService.login(body.email, body.password);
   }
 
+  @Post('hr-login')
+  hrLogin(@Body() body: { email: string }) {
+    return this.authService.hrLogin(body.email);
+  }
+
   @Post('refresh')
   refresh(@Body() body: { refreshToken: string }) {
     if (!body.refreshToken) throw new UnauthorizedException();

@@ -51,6 +51,18 @@ export class AuthService {
     return this.issueTokens(user);
   }
 
+  // ── HR/Admin passwordless login (email only) ─────────────────────────
+  // No password check by design — access is gated purely on the account's
+  // role. Anyone who knows/guesses an admin or hr-staff email can log in,
+  // so only use this for low-sensitivity internal deployments.
+  async hrLogin(email: string) {
+    const user = await this.userRepo.findOne({ where: { email } });
+    if (!user || (user.role !== UserRole.ADMIN && user.role !== UserRole.HR_STAFF)) {
+      throw new UnauthorizedException('Not an authorized HR/admin account.');
+    }
+    return this.issueTokens(user);
+  }
+
   // ── Refresh token ──────────────────────────────────────────────────
   async refresh(token: string) {
     const stored = await this.tokenRepo.findOne({ where: { token } });

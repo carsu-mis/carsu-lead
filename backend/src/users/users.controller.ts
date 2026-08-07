@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Body,
   UseGuards,
@@ -35,6 +36,27 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  // Create a new Admin/HR-Staff account directly (admin only)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Post()
+  createHrOrAdmin(
+    @Body()
+    body: {
+      email: string;
+      role: 'admin' | 'hr-staff';
+      firstName?: string;
+      lastName?: string;
+    },
+  ) {
+    return this.usersService.createHrOrAdmin(
+      body.email,
+      body.role === 'admin' ? UserRole.ADMIN : UserRole.HR_STAFF,
+      body.firstName,
+      body.lastName,
+    );
   }
 
   // Grant HR staff role (admin only)
