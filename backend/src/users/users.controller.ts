@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   UseGuards,
   Req,
@@ -97,5 +98,13 @@ export class UsersController {
   @Patch(':id/role')
   setRole(@Param('id') id: string, @Body('role') role: UserRole) {
     return this.usersService.setRole(id, role);
+  }
+
+  // Delete a user (admin only)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete(':id')
+  deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteUser(id);
   }
 }

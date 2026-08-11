@@ -623,6 +623,8 @@
 </template>
 
 <script setup>
+definePageMeta({ middleware: ["supervisor"] });
+
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 

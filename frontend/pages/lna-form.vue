@@ -1740,7 +1740,7 @@
 </template>
 
 <script setup>
-definePageMeta({});
+definePageMeta({middleware: ["supervisor"]});
 
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 

@@ -51,6 +51,11 @@ export class UsersService {
     return this.repo.findOne({ where: { id: userId } });
   }
 
+  async deleteUser(userId: string) {
+    await this.repo.delete(userId);
+    return { success: true };
+  }
+
   // ── Create a new Admin/HR-Staff account directly ─────────────────────
   // Used by the HR Registry "Add User" flow. These accounts sign in via
   // the passwordless /auth/hr-login (email only), so we still fill the

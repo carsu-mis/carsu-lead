@@ -28,18 +28,18 @@ export class AuthService {
   ) {}
 
   // ── Register (email/password) ──────────────────────────────────────
-  async register(email: string, password: string) {
-    const existing = await this.userRepo.findOne({ where: { email } });
-    if (existing) {
-      throw new ConflictException('Email already in use.');
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-    const user = this.userRepo.create({ email, password: hashed });
-    await this.userRepo.save(user);
-
-    return this.login(email, password); // reuse login to return tokens
+async register(email: string, password: string, firstName?: string, lastName?: string) {
+  const existing = await this.userRepo.findOne({ where: { email } });
+  if (existing) {
+    throw new ConflictException('Email already in use.');
   }
+
+  const hashed = await bcrypt.hash(password, 10);
+  const user = this.userRepo.create({ email, password: hashed, firstName, lastName });
+  await this.userRepo.save(user);
+
+  return this.login(email, password); // reuse login to return tokens
+}
 
   // ── Login (email/password) ─────────────────────────────────────────
   async login(email: string, password: string) {

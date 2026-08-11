@@ -80,7 +80,7 @@ async function login() {
     }
     setTokens(data);
     await fetchMe();
-    navigateTo(data.profileComplete ? "/" : "/complete-profile");
+    navigateTo("/");
   } catch {
     error.value = "Network error. Please try again.";
   } finally {

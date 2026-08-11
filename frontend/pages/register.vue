@@ -8,6 +8,15 @@
       <div v-if="error" class="error-msg">{{ error }}</div>
 
       <div class="field-group">
+  <label>Last Name <span class="req">*</span></label>
+  <input v-model="lastName" type="text" class="text-input" placeholder="Dela Cruz" />
+</div>
+
+<div class="field-group">
+  <label>First Name <span class="req">*</span></label>
+  <input v-model="firstName" type="text" class="text-input" placeholder="Juan" />
+</div>
+      <div class="field-group">
         <label>CarSU Email <span class="req">*</span></label>
         <div class="email-wrap">
           <input v-model="emailPrefix" type="text" placeholder="yourname" />
@@ -46,12 +55,15 @@
   </div>
 </template>
 
+
 <script setup>
 definePageMeta({ layout: false });
 
 const { setTokens, fetchMe } = useAuth();
 const config = useRuntimeConfig();
 
+const lastName = ref("");
+const firstName = ref("");
 const emailPrefix = ref("");
 const password = ref("");
 const confirm = ref("");
@@ -60,6 +72,10 @@ const loading = ref(false);
 
 async function register() {
   error.value = "";
+  if (!lastName.value.trim() || !firstName.value.trim()) {
+    error.value = "Last name and first name are required.";
+    return;
+  }
   if (!emailPrefix.value.trim()) {
     error.value = "Email is required.";
     return;
@@ -81,6 +97,8 @@ async function register() {
       body: JSON.stringify({
         email: emailPrefix.value.trim() + "@carsu.edu.ph",
         password: password.value,
+        firstName: firstName.value.trim(),
+        lastName: lastName.value.trim(),
       }),
     });
     const data = await res.json();
@@ -90,7 +108,7 @@ async function register() {
     }
     setTokens(data);
     await fetchMe();
-    navigateTo("/complete-profile");
+    navigateTo("/");
   } catch {
     error.value = "Network error. Please try again.";
   } finally {
@@ -233,5 +251,20 @@ input[type="password"]:focus {
 }
 .switch-link a:hover {
   text-decoration: underline;
+}
+.text-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d8d4c8;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f8f7f4;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.text-input:focus {
+  border-color: #1a4d2e;
+  background: #fff;
 }
 </style>

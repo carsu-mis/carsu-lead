@@ -76,6 +76,7 @@
             Edit IDP
           </button>
           <button
+            v-if="isSupervisor"
             class="pill pill-gold"
             :class="{ active: activeSection === 'supervisor' }"
             @click="toggleSection('supervisor')"
@@ -105,6 +106,7 @@
             Supervisor Review
           </button>
           <button
+  v-if="isSupervisor"
   class="pill pill-orange"
   :class="{ active: activeSection === 'lna' }"
   @click="toggleSection('lna')"
@@ -132,6 +134,7 @@
             LNA / USWAG
           </button>
           <button
+            v-if="isHrStaff"
             class="pill pill-green"
             :class="{ active: activeSection === 'dashboard' }"
             @click="toggleSection('dashboard')"
@@ -310,7 +313,7 @@
 
       <!-- Supervisor Review card -->
       <Transition name="slide">
-        <div v-if="activeSection === 'supervisor'" class="section-block">
+        <div v-if="activeSection === 'supervisor' && isSupervisor" class="section-block">
           <div class="section-head">
             <div class="sh-line"></div>
             <span class="sh-label">For Supervisors</span>
@@ -361,7 +364,7 @@
 
       <!-- LNA card -->
       <Transition name="slide">
-        <div v-if="activeSection === 'lna'" class="section-block">
+        <div v-if="activeSection === 'lna' && isSupervisor" class="section-block">
           <div class="section-head">
             <div class="sh-line"></div>
             <span class="sh-label">Available Forms</span>
@@ -425,7 +428,7 @@
 
       <!-- Dashboard card -->
       <Transition name="slide">
-        <div v-if="activeSection === 'dashboard'" class="section-block">
+        <div v-if="activeSection === 'dashboard' && isHrStaff" class="section-block">
           <div class="section-head">
             <div class="sh-line"></div>
             <span class="sh-label">HR Staff Access</span>
@@ -531,7 +534,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-definePageMeta({});
+definePageMeta({ middleware: ["auth"] });
 const { isHrStaff, isSupervisor, user } = useAuth();
 
 

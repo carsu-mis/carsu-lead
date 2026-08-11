@@ -7,6 +7,9 @@
           <span class="header-label-bot">Caraga State University - Main Campus</span>
           <span class="header-label-top">Human Resource Management Services</span>
         </div>
+        <button v-if="isLoggedIn" class="logout-btn" @click="logout">
+  Logout
+</button>
       </div>
     </header>
 
@@ -14,7 +17,9 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const { isLoggedIn, logout } = useAuth();
+</script>
 
 <style>
 .auth-loading {
@@ -59,5 +64,22 @@
   font-weight: 700;
   color: #ffcc00;
   letter-spacing: 0.02em;
+}
+.logout-btn {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.logout-btn:hover {
+  background: #ffcc00;
+  color: #003300;
 }
 </style>

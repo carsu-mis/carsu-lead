@@ -1873,7 +1873,7 @@
 </template>
 
 <script setup>
-definePageMeta({});
+definePageMeta({middleware: ["auth"]});
 
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 
