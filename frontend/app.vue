@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="!authReady" class="auth-loading" />
+  <div v-else>
     <header class="header">
       <div class="header-inner">
         <img src="/img/csu-logo-square1.png" class="logo" alt="CarSU" />
@@ -18,7 +19,13 @@
 </template>
 
 <script setup>
-const { isLoggedIn, logout } = useAuth();
+import { onMounted } from "vue";
+
+const { isLoggedIn, logout, authReady, ensureAuthChecked } = useAuth();
+
+onMounted(() => {
+  ensureAuthChecked();
+});
 </script>
 
 <style>

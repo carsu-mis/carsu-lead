@@ -2,6 +2,8 @@ import { ref, computed } from "vue";
 
 const accessToken = ref<string | null>(null);
 const user = ref<any | null>(null);
+const authReady = ref(false);
+let refreshPromise: Promise<void> | null = null;
 
 export function useAuth() {
   const isLoggedIn = computed(() => !!accessToken.value);
@@ -89,6 +91,19 @@ export function useAuth() {
     navigateTo("/login");
   }
 
+  // Runs the initial auth check exactly once per page load, no matter how
+  // many places (app.vue, middleware) ask for it — everyone awaits the same
+  // in-flight promise instead of firing duplicate /auth/refresh calls.
+  function ensureAuthChecked() {
+    if (authReady.value) return Promise.resolve();
+    if (!refreshPromise) {
+      refreshPromise = tryRefresh().finally(() => {
+        authReady.value = true;
+      });
+    }
+    return refreshPromise;
+  }
+
   return {
     user,
     isLoggedIn,
@@ -96,6 +111,8 @@ export function useAuth() {
     isHrStaff,
     isSupervisor,
     profileComplete,
+    authReady,
+    ensureAuthChecked,
     setTokens,
     getAccessToken,
     fetchMe,
