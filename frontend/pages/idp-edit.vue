@@ -196,121 +196,13 @@
             <!-- Position & Designation -->
             <div class="field-group span-2">
               <label>Position &amp; Designation <span class="req">*</span></label>
-              <!-- OVPAA only: Personnel Type -->
-              <div v-if="form.officeAffiliation === 'OVPAA'" style="margin-bottom: 10px">
-                <small class="field-hint" style="margin-bottom: 4px; display: block">Personnel Type</small>
-                <select v-model="form.personnelType" :class="{ error: errors.personnelType }" @change="form.currentPosition = ''" style="max-width: 260px">
-                  <option value="">Select type…</option>
-                  <option value="non-teaching">Non-Teaching</option>
-                  <option value="teaching">Teaching</option>
-                </select>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
-                <div>
-                  <select v-model="form.currentPosition" :class="{ error: errors.currentPosition }" :disabled="form.officeAffiliation === 'OVPAA' && !form.personnelType">
-                    <option value="">Select position…</option>
-                    <template v-if="form.officeAffiliation === 'OVPAA' && form.personnelType === 'teaching'">
-                      <option>Assistant Professor I</option>
-                      <option>Assistant Professor II</option>
-                      <option>Assistant Professor III</option>
-                      <option>Assistant Professor IV</option>
-                      <option>Associate Professor I</option>
-                      <option>Associate Professor II</option>
-                      <option>Associate Professor III</option>
-                      <option>Associate Professor IV</option>
-                      <option>Associate Professor V</option>
-                      <option>Instructor I</option>
-                      <option>Instructor II</option>
-                      <option>Instructor III</option>
-                      <option>Professor I</option>
-                      <option>Professor II</option>
-                      <option>Professor III</option>
-                      <option>Professor IV</option>
-                      <option>Professor V</option>
-                      <option>Professor VI</option>
-                      <option>University Professor</option>
-                    </template>
-                    <template v-if="form.officeAffiliation !== 'OVPAA' || form.personnelType === 'non-teaching'">
-                      <option>Accountant I</option>
-                      <option>Accountant II</option>
-                      <option>Accountant III</option>
-                      <option>Administrative Aide I</option>
-                      <option>Administrative Aide II</option>
-                      <option>Administrative Aide III</option>
-                      <option>Administrative Aide IV</option>
-                      <option>Administrative Aide VI</option>
-                      <option>Administrative Assistant I</option>
-                      <option>Administrative Assistant II</option>
-                      <option>Administrative Assistant III</option>
-                      <option>Administrative Assistant IV</option>
-                      <option>Administrative Assistant V</option>
-                      <option>Administrative Officer I</option>
-                      <option>Administrative Officer II</option>
-                      <option>Administrative Officer III</option>
-                      <option>Administrative Officer IV</option>
-                      <option>Administrative Officer V</option>
-                      <option>Attorney IV</option>
-                      <option>Board Secretary I</option>
-                      <option>Board Secretary V</option>
-                      <option>Chief Administrative Officer</option>
-                      <option>College Librarian I</option>
-                      <option>College Librarian III</option>
-                      <option>Cook I</option>
-                      <option>Cook II</option>
-                      <option>Dentist II</option>
-                      <option>Dormitory Manager III</option>
-                      <option>Executive Assistant III</option>
-                      <option>Executive Assistant IV</option>
-                      <option>Farm Worker I</option>
-                      <option>Farm Worker II</option>
-                      <option>Food Service Supervisor II</option>
-                      <option>Guidance Coordinator I</option>
-                      <option>Guidance Counselor I</option>
-                      <option>Guidance Counselor III</option>
-                      <option>Heavy Equipment Operator I</option>
-                      <option>Houseparent II</option>
-                      <option>Information Officer I</option>
-                      <option>Information Officer II</option>
-                      <option>Information Officer III</option>
-                      <option>Information Systems Analyst I</option>
-                      <option>Information Systems Analyst II</option>
-                      <option>Information Technology Officer I</option>
-                      <option>Internal Auditor I</option>
-                      <option>Internal Auditor II</option>
-                      <option>Internal Auditor III</option>
-                      <option>Legal Assistant II</option>
-                      <option>Legal Assistant III</option>
-                      <option>Machinist I</option>
-                      <option>Nurse II</option>
-                      <option>Planning Officer I</option>
-                      <option>Planning Officer II</option>
-                      <option>Planning Officer III</option>
-                      <option>Project Development Officer I</option>
-                      <option>Project Development Officer II</option>
-                      <option>Project Development Officer III</option>
-                      <option>Registrar III</option>
-                      <option>School Farm Demonstrator</option>
-                      <option>School Farming Coordinator I</option>
-                      <option>Security Guard I</option>
-                      <option>Senior Administrative Assistant III</option>
-                      <option>SUC President IV</option>
-                      <option>Supervising Administrative Officer</option>
-                      <option>University Extension Associate I</option>
-                      <option>University Extension Specialist I</option>
-                      <option>University Extension Specialist II</option>
-                      <option>University Extension Specialist III</option>
-                      <option>University Extension Specialist IV</option>
-                      <option>University Extension Specialist V</option>
-                      <option>University Research Associate I</option>
-                      <option>University Research Associate II</option>
-                      <option>University Researcher II</option>
-                      <option>University Researcher IV</option>
-                      <option>University Researcher V</option>
-                      <option>Veterinarian II</option>
-                      <option>Vocational Placement Coordinator I</option>
-                    </template>
-                  </select>
-                </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start">
+                <input
+                  v-model="form.currentPosition"
+                  type="text"
+                  :class="{ error: errors.currentPosition }"
+                  placeholder="e.g. Administrative Officer II"
+                />
                 <!-- Designation toggle -->
                 <div class="field-group">
                   <label>Designation <span class="req">*</span></label>
@@ -399,6 +291,8 @@
         <div class="section-body">
           <div class="section-desc">
             Update competencies you need to develop based on your current or target role.
+            For detailed descriptions and behavioral indicators, please refer to the
+            <a href="https://tinyurl.com/CompetencyManualandModel" target="_blank">Competency Manual and Model</a>.
           </div>
 
           <!-- Competency Purpose -->
@@ -435,38 +329,26 @@
                 <tr v-for="(row, i) in form.competencyRows" :key="i">
                   <td class="row-num-cell">{{ i + 1 }}</td>
                   <td>
-                    <select v-model="row.targetCompetency" @change="row.competencyGroup = getCompetencyCluster(row.targetCompetency); row.requiredLevel = getRequiredLevel(row.targetCompetency, form.currentPosition)">
-                      <option value="">Select…</option>
-                      <template v-for="cluster in availableClusters" :key="cluster">
-                        <optgroup :label="cluster">
-                          <option v-for="c in allCompetencies[cluster]" :key="c" :value="c">{{ c }}</option>
-                        </optgroup>
-                      </template>
-                    </select>
+                    <input
+                      type="text"
+                      v-model="row.targetCompetency"
+                      placeholder="Type competency…"
+                      @change="row.competencyGroup = getCompetencyCluster(row.targetCompetency); row.requiredLevel = getRequiredLevel(row.targetCompetency, form.currentPosition)"
+                    />
                   </td>
                   <td>
-                    <select v-model="row.currentLevel">
-                      <option value="">Select…</option>
-                      <option value="1 - Basic">1 - Basic</option>
-                      <option value="2 - Intermediate">2 - Intermediate</option>
-                      <option value="3 - Advanced">3 - Advanced</option>
-                      <option value="4 - Expert">4 - Expert</option>
-                    </select>
+                    <input
+                      type="text"
+                      v-model="row.currentLevel"
+                      placeholder="e.g. 2 - Intermediate"
+                    />
                   </td>
                   <td>
-                    <template v-if="form.currentPosition === 'Director'">
-                      <select v-model="row.requiredLevel" style="min-width: 130px">
-                        <option value="">Select…</option>
-                        <option value="1 - Basic">1 - Basic</option>
-                        <option value="2 - Intermediate">2 - Intermediate</option>
-                        <option value="3 - Advanced">3 - Advanced</option>
-                        <option value="4 - Expert">4 - Expert</option>
-                      </select>
-                    </template>
-                    <template v-else>
-                      <div v-if="row.requiredLevel" class="required-level-badge">{{ row.requiredLevel }}</div>
-                      <div v-else class="required-level-empty">Auto-set</div>
-                    </template>
+                    <input
+                      type="text"
+                      v-model="row.requiredLevel"
+                      placeholder="e.g. 3 - Advanced"
+                    />
                   </td>
                   <td>
                     <select v-model="row.leadInterventions" style="min-width: 200px">
@@ -621,26 +503,29 @@
                   <th style="width: 130px">Mode of Activity</th>
                   <th>Trainer / Provider</th>
                   <th style="width: 130px">Intended Year of Enrollment</th>
-                  <th style="width: 40px"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-if="!form.proactRows.length">
-                  <td colspan="7" style="text-align: center; color: var(--text-light); font-style: italic; padding: 20px">No Pro-ACT entries. Add a row below.</td>
-                </tr>
-                <tr v-for="(row, i) in form.proactRows" :key="i">
-                  <td class="row-num-cell">{{ i + 1 }}</td>
+                <template v-if="filledCompetencies.length === 0">
+                  <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-light); font-style: italic; padding: 20px">
+                      Add competencies in Section I to populate this table.
+                    </td>
+                  </tr>
+                </template>
+                <tr v-for="(competency, idx) in filledCompetencies" :key="competency">
+                  <td class="row-num-cell">{{ idx + 1 }}</td>
                   <td style="background: rgba(0, 51, 0, 0.04)">
-                    <div class="proact-skill-label">{{ row.targetSkill || '—' }}</div>
+                    <div class="proact-skill-label">{{ competency }}</div>
                   </td>
                   <td>
-                    <input type="text" v-model="row.trainingTitle" placeholder="Enter training or intervention title" list="proact-suggestions-edit" />
+                    <input type="text" v-model="form.proactRows[idx].trainingTitle" placeholder="Enter training or intervention title" list="proact-suggestions-edit" />
                     <datalist id="proact-suggestions-edit">
                       <option v-for="s in proactSuggestions" :key="s" :value="s" />
                     </datalist>
                   </td>
                   <td>
-                    <select v-model="row.modeOfActivity">
+                    <select v-model="form.proactRows[idx].modeOfActivity">
                       <option value="">Select…</option>
                       <option>Face-to-face</option>
                       <option>Online</option>
@@ -649,10 +534,10 @@
                     </select>
                   </td>
                   <td>
-                    <input type="text" v-model="row.trainerProvider" placeholder="Optional" />
+                    <input type="text" v-model="form.proactRows[idx].trainerProvider" placeholder="Optional" />
                   </td>
                   <td>
-                    <select v-model="row.targetTimeline">
+                    <select v-model="form.proactRows[idx].targetTimeline">
                       <option value="">Select…</option>
                       <option>2026</option>
                       <option>2027</option>
@@ -662,16 +547,13 @@
                       <option>2031</option>
                     </select>
                   </td>
-                  <td>
-                    <button class="btn-remove-row" @click="form.proactRows.splice(i, 1)" title="Remove row">×</button>
-                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="table-actions">
-            <button class="btn-add-row" @click="form.proactRows.push({ targetSkill: '', trainingTitle: '', modeOfActivity: '', trainerProvider: '', targetTimeline: '' })">+ Add Row</button>
-          </div>
+          <p v-if="filledCompetencies.length > 0" style="font-size: 13px; color: var(--text-light); margin-top: 10px">
+            Rows are auto-generated based on competencies entered in Section I.
+          </p>
         </div>
       </div>
 
@@ -2767,6 +2649,28 @@ const availableClusters = computed(() => {
     const list = allCompetencies.value[cluster] || [];
     return list.some((c) => posData[c] !== undefined && posData[c] !== null);
   });
+});
+
+// Competencies actually entered in Section I — drives Pro-ACT (Section III) rows
+const filledCompetencies = computed(() => {
+  const list = form.competencyRows
+    .map((r) => r.targetCompetency)
+    .filter((c) => c && c.trim());
+  // Keep proactRows in sync — grow or shrink as needed
+  while (form.proactRows.length < list.length) {
+    form.proactRows.push({
+      targetSkill: "",
+      trainingTitle: "",
+      modeOfActivity: "",
+      trainerProvider: "",
+      targetTimeline: "",
+    });
+  }
+  // Sync targetSkill on each row
+  list.forEach((c, i) => {
+    form.proactRows[i].targetSkill = c;
+  });
+  return list;
 });
 
 function getCompetencyCluster(competency) {
