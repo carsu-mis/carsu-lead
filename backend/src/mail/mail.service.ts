@@ -89,7 +89,7 @@ export class MailService {
                 {
                   filename: `IDP_${opts.refId}_${opts.name.replace(/\s+/g, '_')}.pdf`,
                   content: opts.pdfBuffer,
-                  contentType: 'application/pdf',
+                  contentType: 'application/pdf', 
                 },
               ],
             }

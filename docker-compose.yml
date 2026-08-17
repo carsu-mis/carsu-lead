@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: carsu_lead
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: carsu2026
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
@@ -20,14 +20,14 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       DB_USERNAME: postgres
-      DB_PASSWORD: carsu2026
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: carsu_lead
-      JWT_SECRET: carsuLeadSuperSecret2026
-      FRONTEND_URL: http://localhost:3000
-      HR_EMAIL: guilagorres21@gmail.com
-      MAIL_USER: guilagorres21@gmail.com
-      MAIL_PASS: utowycsfwnzwptkh
-      MAIL_FROM: guilagorres21@gmail.com
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+      HR_EMAIL: ${HR_EMAIL}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+      MAIL_FROM: ${MAIL_FROM}
     depends_on:
       - db
 
