@@ -581,6 +581,8 @@ button {
 /* ── PAGE ────────────────────────────────────────────── */
 .page {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #f9f7f2;
   font-family: "Roboto", sans-serif;
   color: #333;
@@ -651,7 +653,7 @@ button {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 204, 0, 0.65);
+  color: rgba(255, 255, 255, 0.6);
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -659,7 +661,7 @@ button {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #ffcc00;
+  background: #5ac83c;
   opacity: 0.55;
   display: inline-block;
 }
@@ -767,59 +769,59 @@ button {
 
 /* Gold / IDP */
 .pill-gold {
-  border-color: rgba(255, 204, 0, 0.45);
-  color: rgba(255, 204, 0, 0.85);
-  background: rgba(255, 204, 0, 0.06);
+  border-color: rgba(249, 220, 7, 0.5);
+  color: rgba(249, 220, 7, 0.9);
+  background: rgba(249, 220, 7, 0.06);
 }
 .pill-gold::before {
-  background: rgba(255, 204, 0, 0.15);
+  background: rgba(249, 220, 7, 0.15);
 }
 .pill-gold:hover,
 .pill-gold.active {
-  background: #ffcc00;
-  border-color: #ffcc00;
+  background: #f9dc07;
+  border-color: #f9dc07;
   color: #003300;
   box-shadow:
-    0 0 0 3px rgba(255, 204, 0, 0.2),
-    0 4px 16px rgba(255, 204, 0, 0.3);
+    0 0 0 3px rgba(249, 220, 7, 0.2),
+    0 4px 16px rgba(249, 220, 7, 0.3);
 }
 
 /* Teal / Edit IDP → unified gold */
 .pill-teal {
-  border-color: rgba(255, 204, 0, 0.45);
-  color: rgba(255, 204, 0, 0.85);
-  background: rgba(255, 204, 0, 0.06);
+  border-color: rgba(249, 220, 7, 0.5);
+  color: rgba(249, 220, 7, 0.9);
+  background: rgba(249, 220, 7, 0.06);
 }
 .pill-teal::before {
-  background: rgba(255, 204, 0, 0.15);
+  background: rgba(249, 220, 7, 0.15);
 }
 .pill-teal:hover,
 .pill-teal.active {
-  background: #ffcc00;
-  border-color: #ffcc00;
+  background: #f9dc07;
+  border-color: #f9dc07;
   color: #003300;
   box-shadow:
-    0 0 0 3px rgba(255, 204, 0, 0.2),
-    0 4px 16px rgba(255, 204, 0, 0.3);
+    0 0 0 3px rgba(249, 220, 7, 0.2),
+    0 4px 16px rgba(249, 220, 7, 0.3);
 }
 
 /* Orange / LNA → unified gold */
 .pill-orange {
-  border-color: rgba(255, 204, 0, 0.45);
-  color: rgba(255, 204, 0, 0.85);
-  background: rgba(255, 204, 0, 0.06);
+  border-color: rgba(249, 220, 7, 0.5);
+  color: rgba(249, 220, 7, 0.9);
+  background: rgba(249, 220, 7, 0.06);
 }
 .pill-orange::before {
-  background: rgba(255, 204, 0, 0.15);
+  background: rgba(249, 220, 7, 0.15);
 }
 .pill-orange:hover,
 .pill-orange.active {
-  background: #ffcc00;
-  border-color: #ffcc00;
+  background: #f9dc07;
+  border-color: #f9dc07;
   color: #003300;
   box-shadow:
-    0 0 0 3px rgba(255, 204, 0, 0.2),
-    0 4px 16px rgba(255, 204, 0, 0.3);
+    0 0 0 3px rgba(249, 220, 7, 0.2),
+    0 4px 16px rgba(249, 220, 7, 0.3);
 }
 
 /* Green / Dashboard */
@@ -835,7 +837,7 @@ button {
 .pill-green.active {
   background: #137300;
   border-color: #1ea300;
-  color: #ffcc00;
+  color: #ffffff;
   box-shadow:
     0 0 0 3px rgba(19, 115, 0, 0.25),
     0 4px 16px rgba(19, 115, 0, 0.35);
@@ -975,16 +977,16 @@ button {
   border-radius: 16px 16px 0 0;
 }
 .bar-teal {
-  background: linear-gradient(90deg, #ffcc00, #ffdd44);
+  background: linear-gradient(90deg, #003300, #009900);
 }
 .bar-gold {
-  background: linear-gradient(90deg, #ffcc00, #ffdd44);
+  background: linear-gradient(90deg, #003300, #009900);
 }
 .bar-orange {
-  background: linear-gradient(90deg, #ffcc00, #ffdd44);
+  background: linear-gradient(90deg, #003300, #009900);
 }
 .bar-green {
-  background: linear-gradient(90deg, #ffcc00, #ffdd44);
+  background: linear-gradient(90deg, #003300, #009900);
 }
 
 .card-icon {
@@ -1001,24 +1003,24 @@ button {
   height: 26px;
 }
 .icon-teal {
-  background: #fffbea;
-  border: 1.5px solid #ffe566;
-  color: #b89400;
+  background: #eafaea;
+  border: 1.5px solid #a8dfa8;
+  color: #137300;
 }
 .icon-gold {
-  background: #fffbea;
-  border: 1.5px solid #ffe566;
-  color: #b89400;
+  background: #eafaea;
+  border: 1.5px solid #a8dfa8;
+  color: #137300;
 }
 .icon-orange {
-  background: #fffbea;
-  border: 1.5px solid #ffe566;
-  color: #b89400;
+  background: #eafaea;
+  border: 1.5px solid #a8dfa8;
+  color: #137300;
 }
 .icon-green {
-  background: #fffbea;
-  border: 1.5px solid #ffe566;
-  color: #b89400;
+  background: #eafaea;
+  border: 1.5px solid #a8dfa8;
+  color: #137300;
 }
 
 .card-tag {
@@ -1028,19 +1030,19 @@ button {
   text-transform: uppercase;
 }
 .tag-teal {
-  color: #b89400;
+  color: #137300;
 }
 .tag-gold {
-  color: #b89400;
+  color: #137300;
 }
 .tag-orange {
-  color: #b89400;
+  color: #137300;
 }
 .tag-green {
-  color: #b89400;
+  color: #137300;
 }
 .tag-gold-light {
-  color: #ffcc00;
+  color: #5ac83c;
 }
 
 .card-title {
@@ -1051,7 +1053,7 @@ button {
   line-height: 1.3;
 }
 .title-light {
-  color: #ffcc00;
+  color: #5ac83c;
 }
 
 .card-desc {
@@ -1094,19 +1096,19 @@ button {
   transition: gap 0.2s ease;
 }
 .cta-teal {
-  color: #b89400;
+  color: #137300;
 }
 .cta-gold {
-  color: #b89400;
+  color: #137300;
 }
 .cta-orange {
-  color: #b89400;
+  color: #137300;
 }
 .cta-green {
-  color: #b89400;
+  color: #137300;
 }
 .cta-gold-light {
-  color: #ffcc00;
+  color: #5ac83c;
 }
 .card:hover .card-cta {
   gap: 8px;
@@ -1132,15 +1134,15 @@ button {
 .help-icon {
   width: 42px;
   height: 42px;
-  background: #fffbea;
-  border: 1.5px solid #ffe566;
+  background: #eafaea;
+  border: 1.5px solid #a8dfa8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
   font-weight: 800;
-  color: #b89400;
+  color: #137300;
 }
 .help-title {
   font-family: "Roboto", sans-serif;
@@ -1187,6 +1189,7 @@ button {
   background: #003300;
   border-top: 3px solid #ffcc00;
   padding: 18px 32px;
+  margin-top: auto;
 }
 .footer-inner {
   max-width: 1140px;
@@ -1205,7 +1208,7 @@ button {
 .footer-name {
   font-size: 13px;
   font-weight: 700;
-  color: #ffcc00;
+  color: #ffffff;
 }
 .footer-sub {
   font-size: 11px;

@@ -91,16 +91,6 @@
     <p>{{ loadingMsg }}</p>
   </div>
 
-  <!-- Page nav breadcrumb -->
-  <div class="page-nav">
-    <a href="/" class="back-link">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-      Back to Home
-    </a>
-    <span class="nav-sep">/</span>
-    <span class="nav-current">Individual Development Plan (IDP) 2026-2031</span>
-  </div>
-
   <!-- ═══════════════════════════════════════════════ -->
   <!-- STAGE 1 SUCCESS SCREEN                          -->
   <!-- ═══════════════════════════════════════════════ -->
@@ -1906,7 +1896,13 @@
 <script setup>
 definePageMeta({middleware: ["auth"]});
 
-import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
+import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+
+const { setPageHeader, clearPageHeader } = usePageHeader();
+setPageHeader("Individual Development Plan (IDP) 2026-2031", "/");
+onUnmounted(() => {
+  clearPageHeader();
+});
 
 // ── NOTE FOR MIGRATION ──────────────────────────────────────────────────────
 // APPS_SCRIPT_URL below is temporary for the current Google Sheets backend.

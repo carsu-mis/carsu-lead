@@ -3,11 +3,24 @@
   <div v-else>
     <header class="header">
       <div class="header-inner">
-        <img src="/img/csu-logo-square1.png" class="logo" alt="CarSU" />
-        <div class="header-label">
-          <span class="header-label-bot">Caraga State University - Main Campus</span>
-          <span class="header-label-top">Human Resource Management Services</span>
-        </div>
+        <template v-if="pageHeaderOverride">
+          <NuxtLink :to="pageHeaderOverride.backTo" class="header-back-link">
+            <span class="back-icon-badge">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+            </span>
+            
+          </NuxtLink>
+          <div class="header-label">
+            <span class="header-label-bot">{{ pageHeaderOverride.title }}</span>
+          </div>
+        </template>
+        <template v-else>
+          <img src="/img/csu-logo-square1.png" class="logo" alt="CarSU" />
+          <div class="header-label">
+            <span class="header-label-bot">Caraga State University - Main Campus</span>
+            <span class="header-label-top">Human Resource Management Services</span>
+          </div>
+        </template>
         <button v-if="isLoggedIn" class="logout-btn" @click="logout">
   Logout
 </button>
@@ -22,6 +35,7 @@
 import { onMounted } from "vue";
 
 const { isLoggedIn, logout, authReady, ensureAuthChecked } = useAuth();
+const { pageHeaderOverride } = usePageHeader();
 
 onMounted(() => {
   ensureAuthChecked();
@@ -36,7 +50,6 @@ onMounted(() => {
 
 .header {
   background: #003300;
-  border-bottom: 4px solid #ffcc00;
   padding: 14px 32px;
   position: sticky;
   top: 0;
@@ -69,8 +82,41 @@ onMounted(() => {
 .header-label-bot {
   font-size: 15px;
   font-weight: 700;
-  color: #ffcc00;
+  color: #ffffff;
   letter-spacing: 0.02em;
+}
+.header-back-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.header-back-link:hover {
+  opacity: 0.85;
+}
+.header-back-link .back-icon-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.header-back-link svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #003300;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .logout-btn {
   background: transparent;
