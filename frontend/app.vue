@@ -100,10 +100,12 @@ onBeforeUnmount(() => {
 
 .header {
   background: #003300;
-  padding: 14px 32px;
+  padding: 20px 40px;
   position: sticky;
   top: 0;
   z-index: 50;
+  border-bottom: 2px solid #4d4d4d;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
 }
 .header-inner {
   display: flex;

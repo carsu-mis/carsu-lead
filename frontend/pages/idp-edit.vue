@@ -3160,16 +3160,16 @@ function resetAndEdit() {
 
 /* ── Container ── */
 .container {
-  max-width: 1100px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 40px 32px 80px;
+  padding: 24px 32px 80px;
 }
 
 /* ── Form title block ── */
 .form-title-block {
   text-align: center;
-  margin-bottom: 40px;
-  padding-bottom: 32px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 2px solid var(--gold);
 }
 .form-title-block h2 {
@@ -3214,7 +3214,7 @@ function resetAndEdit() {
 }
 .section-header {
   background: var(--navy);
-  padding: 16px 28px;
+  padding: 18px 36px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -3234,7 +3234,7 @@ function resetAndEdit() {
 }
 .section-header h3 { color: var(--white); font-size: 15px; font-weight: 600; letter-spacing: 0.03em; }
 .section-header p { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 1px; }
-.section-body { padding: 28px 32px; }
+.section-body { padding: 34px 40px; }
 
 /* ── Section desc ── */
 .section-desc {
@@ -3249,7 +3249,7 @@ function resetAndEdit() {
 }
 
 /* ── Form fields ── */
-.field-grid { display: grid; gap: 18px; }
+.field-grid { display: grid; gap: 24px; }
 .field-grid-2 { grid-template-columns: 1fr 1fr; }
 .field-group { display: flex; flex-direction: column; gap: 6px; }
 .field-group.span-2 { grid-column: span 2; }

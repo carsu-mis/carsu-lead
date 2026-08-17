@@ -177,10 +177,6 @@
   <!-- STAGE 1: EMPLOYEE FORM                          -->
   <!-- ═══════════════════════════════════════════════ -->
   <div v-if="stage === 'stage1'" class="container">
-    <div class="form-title-block">
-    
-    </div>
-
     <!-- ── HEADER INFO ── -->
     <div class="section-card">
       <div class="section-header">
@@ -5028,9 +5024,9 @@ async function submitStage2() {
 
 /* ── Container ── */
 .container {
-  max-width: 1140px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 48px 40px 80px;
+  padding: 28px 40px 80px;
 }
 
 /* ── Form title ── */
@@ -5072,7 +5068,7 @@ async function submitStage2() {
 }
 .section-header {
   background: var(--navy);
-  padding: 16px 28px;
+  padding: 18px 36px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -5102,7 +5098,7 @@ async function submitStage2() {
   margin-top: 1px;
 }
 .section-body {
-  padding: 36px;
+  padding: 40px 44px;
 }
 .readonly-badge {
   margin-left: auto;
@@ -5119,7 +5115,7 @@ async function submitStage2() {
 /* ── Form fields ── */
 .field-grid {
   display: grid;
-  gap: 18px;
+  gap: 24px;
 }
 .field-grid-2 {
   grid-template-columns: 1fr 1fr;

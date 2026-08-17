@@ -116,10 +116,6 @@
 
     <!-- Main Form -->
     <div v-if="screen === 'form'" class="container">
-      <div class="form-title-block">
-        
-      </div>
-
       <!-- HEADER INFO — always visible -->
       <div class="section-card">
         <div class="section-header">
@@ -3187,9 +3183,9 @@ onMounted(async () => {
 }
 
 .container {
-  max-width: 1140px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 48px 40px 80px;
+  padding: 28px 40px 80px;
 }
 
 .form-title-block {
@@ -3236,7 +3232,7 @@ onMounted(async () => {
 }
 .section-header {
   background: var(--navy);
-  padding: 16px 28px;
+  padding: 18px 36px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -3266,12 +3262,12 @@ onMounted(async () => {
   margin-top: 1px;
 }
 .section-body {
-  padding: 36px;
+  padding: 40px 44px;
 }
 
 .field-grid {
   display: grid;
-  gap: 18px;
+  gap: 24px;
 }
 .field-grid-2 {
   grid-template-columns: 1fr 1fr;

@@ -1105,16 +1105,16 @@ async function submitAssessment() {
 
 /* ── Container ── */
 .container {
-  max-width: 1140px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 48px 40px 80px;
+  padding: 28px 40px 80px;
 }
 
 /* ── Page title ── */
 .page-title {
   text-align: center;
-  margin-bottom: 40px;
-  padding-bottom: 32px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 3px solid var(--navy);
 }
 .page-title h2 {
@@ -1162,7 +1162,7 @@ async function submitAssessment() {
 }
 .section-header {
   background: var(--navy);
-  padding: 16px 28px;
+  padding: 18px 36px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1202,13 +1202,13 @@ async function submitAssessment() {
   text-transform: uppercase;
 }
 .section-body {
-  padding: 36px;
+  padding: 40px 44px;
 }
 
 /* ── Read-only grid ── */
 .ro-grid {
   display: grid;
-  gap: 16px;
+  gap: 22px;
 }
 .ro-grid-2 {
   grid-template-columns: 1fr 1fr;
