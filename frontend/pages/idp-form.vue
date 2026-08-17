@@ -178,7 +178,7 @@
   <!-- ═══════════════════════════════════════════════ -->
   <div v-if="stage === 'stage1'" class="container">
     <div class="form-title-block">
-      <h2>Individual Development Plan (IDP) 2026-2031</h2>
+    
       <p>
         Complete all sections carefully. Your supervisor will be notified
         automatically upon submission.
