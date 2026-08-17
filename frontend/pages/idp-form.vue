@@ -213,7 +213,7 @@
 
         <!-- Office Affiliation -->
         <div class="field-group" style="margin-bottom: 20px">
-          <label>Office Affiliation <span class="req">*</span></label>
+          <label>Pillars <span class="req">*</span></label>
           <select v-model="form.officeAffiliation" style="width: 100%; margin-bottom: 0">
             <option value="">Select…</option>
             <option>OVPAF</option>
@@ -300,12 +300,17 @@
             <label>Highest Educational Attainment <span class="req">*</span></label>
             <select v-model="form.educAttainment" style="width: 100%; margin-bottom: 0">
               <option value="">Select…</option>
+              <option>Elementary/Primary School Graduate</option>
+              <option>High School/Secondary Graduate</option>
+              <option>Vocational or Technical Course</option>
+              <option>College Undergraduate</option>
               <option>Bachelor's Degree</option>
               <option>Post-Baccalaureate Certificate</option>
               <option>Master's Degree</option>
               <option>Post-Master's Certificate</option>
               <option>Doctorate Degree (Ph.D. / Ed.D. / etc.)</option>
               <option>Post-Doctoral</option>
+              <option>Other</option>
             </select>
             <input
               v-model="form.educAttainmentSpec"
@@ -318,20 +323,31 @@
 
           <!-- Position & Designation -->
           <div class="field-group span-2">
-            <label>Position &amp; Designation <span class="req">*</span></label>
             <div
               style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"
             >
-              <input
-                v-model="form.currentPosition"
-                type="text"
-                placeholder="e.g. Administrative Officer II"
-              />
-              <input
-                v-model="form.designation"
-                type="text"
-                placeholder="e.g. Director, or N/A"
-              />
+              <div class="field-group">
+                <label>Position <span class="req">*</span></label>
+                <select v-model="form.currentPosition">
+                  <option value="">Select position…</option>
+                  <option
+                    v-for="pos in positionOptions"
+                    :key="pos"
+                    :value="pos"
+                  >
+                    {{ pos }}
+                  </option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Designation <span class="req">*</span></label>
+                <input
+                  v-model="form.designation"
+                  type="text"
+                  placeholder="Director / N/A"
+                  @input="form.designation = form.designation.toUpperCase()"
+                />
+              </div>
             </div>
           </div>
 
@@ -352,6 +368,7 @@
               v-model="form.supervisorName"
               type="text"
               placeholder="Last name, First name, M.I."
+              @input="form.supervisorName = form.supervisorName.toUpperCase()"
             />
             <small class="field-hint"
               >Format: Last name, First name, M.I.</small
@@ -479,10 +496,9 @@
                 <tr v-for="(row, idx) in competencyRows" :key="idx">
                   <td class="row-num-cell">{{ idx + 1 }}</td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       v-model="row.targetCompetency"
-                      placeholder="Type competency…"
+                      style="min-width: 200px"
                       @change="
                         row.competencyGroup = getCompetencyCluster(
                           row.targetCompetency,
@@ -492,7 +508,22 @@
                           form.currentPosition,
                         );
                       "
-                    />
+                    >
+                      <option value="">Select competency…</option>
+                      <optgroup
+                        v-for="cluster in availableClusters"
+                        :key="cluster"
+                        :label="cluster"
+                      >
+                        <option
+                          v-for="comp in allCompetencies[cluster]"
+                          :key="comp"
+                          :value="comp"
+                        >
+                          {{ comp }}
+                        </option>
+                      </optgroup>
+                    </select>
                   </td>
                   <td>
                     <input
@@ -912,7 +943,7 @@
             >
           </div>
           <div class="review-field">
-            <span class="review-label">Office Affiliation</span>
+            <span class="review-label">Pillars</span>
             <span class="review-value">{{
               form.officeAffiliation || "—"
             }}</span>
@@ -1273,7 +1304,7 @@
             <div class="ro-value">{{ idpData.campus || "—" }}</div>
           </div>
           <div class="ro-field">
-            <div class="ro-label">Office Affiliation</div>
+            <div class="ro-label">Pillars</div>
             <div class="ro-value">{{ idpData.officeAffiliation || "—" }}</div>
           </div>
           <div class="ro-field span-2">
@@ -1885,8 +1916,6 @@ import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 // ────────────────────────────────────────────────────────────────────────────
 const config = useRuntimeConfig();
 const API = config.public.apiBase; // resolves to http://localhost:3001
-// ── Ensure auth is ready ──────────────────────────────────────────
-const { user } = useAuth();
 
 // ── Stage control ──────────────────────────────────────────────────────────
 // Possible values: 'stage1' | 'token' | 'stage2' | 'stage1-success' | 'stage2-success'
@@ -2360,6 +2389,10 @@ const LEVEL_LABEL = {
 // Source: Official CSU Competency Model Document
 // Levels: 1=Basic, 2=Intermediate, 3=Advanced, 4=Expert
 // Competency absent from a position = key not present (excluded from dropdown)
+// Dropdown options for the Position field — derived from competencyModel's own
+// keys so the list can never fall out of sync with the required-level lookup.
+const positionOptions = computed(() => Object.keys(competencyModel));
+
 const competencyModel = {
   // ── ADMIN AIDE I – Utility ──────────────────────────────────────────
   "Admin Aide I – Utility": {
@@ -4594,7 +4627,6 @@ async function submitStage1() {
 
   const payload = {
     action: "submitStage1",
-    userId: user.value?.id, // ← add this
     employeeEmail: form.employeeEmail,
     campus: "CSU Main Campus",
     officeAffiliation: form.officeAffiliation,
@@ -4711,21 +4743,6 @@ async function loadSubmission(token) {
     console.log("LOAD SUBMISSION DATA:", JSON.stringify(data, null, 2));
 
     if (data.refId) {
-      // ── ADD THIS: flatten user profile into idpData ──
-      if (data.user) {
-        data.campus = data.user.campus ?? "";
-        data.officeAffiliation = data.user.officeAffiliation ?? "";
-        data.collegeOfficeUnit = data.user.collegeOfficeUnit ?? "";
-        data.nameOfPersonnel = [data.user.firstName, data.user.lastName]
-          .filter(Boolean)
-          .join(" ");
-        data.educAttainment = data.user.educAttainment ?? "";
-        data.educAttainmentSpec = data.user.educAttainmentSpec ?? "";
-        data.currentPosition = data.user.currentPosition ?? "";
-        data.yearsInPosition = data.user.yearsInPosition ?? "";
-        data.yearsInCSU = data.user.yearsInCSU ?? "";
-      }
-      // ────────────────────────────────────────────────
       idpData.value = data;
       stage.value = "stage2";
     } else {

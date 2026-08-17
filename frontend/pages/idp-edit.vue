@@ -107,7 +107,7 @@
 
           <!-- Office Affiliation -->
           <div class="field-group" style="margin-bottom: 20px">
-            <label>Office Affiliation <span class="req">*</span></label>
+            <label>Pillars <span class="req">*</span></label>
             <div class="checkbox-group">
               <label v-for="opt in officeOptions" :key="opt" class="checkbox-item" :class="{ checked: form.officeAffiliation === opt }">
                 <input type="radio" name="officeAffiliationEdit" :value="opt" v-model="form.officeAffiliation" @change="form.collegeOfficeUnit = ''; form.collegeProgram = ''" />
@@ -182,12 +182,17 @@
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
                 <select v-model="form.educAttainment" :class="{ error: errors.educAttainment }">
                   <option value="">Select…</option>
+                  <option>Elementary/Primary School Graduate</option>
+                  <option>High School/Secondary Graduate</option>
+                  <option>Vocational or Technical Course</option>
+                  <option>College Undergraduate</option>
                   <option>Bachelor's Degree</option>
                   <option>Post-Baccalaureate Certificate</option>
                   <option>Master's Degree</option>
                   <option>Post-Master's Certificate</option>
                   <option>Doctorate Degree (Ph.D. / Ed.D. / etc.)</option>
                   <option>Post-Doctoral</option>
+                  <option>Other</option>
                 </select>
                 <input type="text" v-model="form.educAttainmentSpec" :class="{ error: errors.educAttainmentSpec }" placeholder="Specify degree / program (e.g. BS COMPUTER SCIENCE)" @input="form.educAttainmentSpec = form.educAttainmentSpec.toUpperCase()" />
               </div>
@@ -195,14 +200,23 @@
 
             <!-- Position & Designation -->
             <div class="field-group span-2">
-              <label>Position &amp; Designation <span class="req">*</span></label>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start">
-                <input
-                  v-model="form.currentPosition"
-                  type="text"
-                  :class="{ error: errors.currentPosition }"
-                  placeholder="e.g. Administrative Officer II"
-                />
+                <div class="field-group">
+                  <label>Position <span class="req">*</span></label>
+                  <select
+                    v-model="form.currentPosition"
+                    :class="{ error: errors.currentPosition }"
+                  >
+                    <option value="">Select position…</option>
+                    <option
+                      v-for="pos in positionOptions"
+                      :key="pos"
+                      :value="pos"
+                    >
+                      {{ pos }}
+                    </option>
+                  </select>
+                </div>
                 <!-- Designation toggle -->
                 <div class="field-group">
                   <label>Designation <span class="req">*</span></label>
@@ -216,7 +230,7 @@
                       Specify
                     </label>
                   </div>
-                  <input v-if="form.designationMode === 'specify'" type="text" v-model="form.designation" placeholder="e.g. OIC Director, Acting Dean…" style="margin-top: 6px" />
+                  <input v-if="form.designationMode === 'specify'" type="text" v-model="form.designation" placeholder="e.g. OIC Director, Acting Dean…" style="margin-top: 6px" @input="form.designation = form.designation.toUpperCase()" />
                 </div>
               </div>
             </div>
@@ -329,12 +343,26 @@
                 <tr v-for="(row, i) in form.competencyRows" :key="i">
                   <td class="row-num-cell">{{ i + 1 }}</td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       v-model="row.targetCompetency"
-                      placeholder="Type competency…"
+                      style="min-width: 200px"
                       @change="row.competencyGroup = getCompetencyCluster(row.targetCompetency); row.requiredLevel = getRequiredLevel(row.targetCompetency, form.currentPosition)"
-                    />
+                    >
+                      <option value="">Select competency…</option>
+                      <optgroup
+                        v-for="cluster in availableClusters"
+                        :key="cluster"
+                        :label="cluster"
+                      >
+                        <option
+                          v-for="comp in allCompetencies[cluster]"
+                          :key="comp"
+                          :value="comp"
+                        >
+                          {{ comp }}
+                        </option>
+                      </optgroup>
+                    </select>
                   </td>
                   <td>
                     <input
@@ -778,6 +806,10 @@ const subOfficeMap = {
 };
 
 // ── Competency Model ───────────────────────────────────────────────────────
+// Dropdown options for the Position field — derived from competencyModel's own
+// keys so the list can never fall out of sync with the required-level lookup.
+const positionOptions = computed(() => Object.keys(competencyModel));
+
 const competencyModel = {
   // ── ADMIN AIDE I – Utility ──────────────────────────────────────────
   "Admin Aide I – Utility": {

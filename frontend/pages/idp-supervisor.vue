@@ -766,21 +766,6 @@ async function loadByToken() {
       return;
     }
 
-    // Flatten user profile fields into idpData for easy template access
-    if (data.user) {
-      data.campus = data.user.campus ?? "";
-      data.officeAffiliation = data.user.officeAffiliation ?? "";
-      data.collegeOfficeUnit = data.user.collegeOfficeUnit ?? "";
-      data.nameOfPersonnel = [data.user.firstName, data.user.lastName]
-        .filter(Boolean)
-        .join(" ");
-      data.educAttainment = data.user.educAttainment ?? "";
-      data.educAttainmentSpec = data.user.educAttainmentSpec ?? "";
-      data.currentPosition = data.user.currentPosition ?? "";
-      data.yearsInPosition = data.user.yearsInPosition ?? "";
-      data.yearsInCSU = data.user.yearsInCSU ?? "";
-    }
-
     idpData.value = data;
     showPrivacyModal.value = true;
   } catch (err) {
