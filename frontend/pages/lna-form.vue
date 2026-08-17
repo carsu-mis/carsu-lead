@@ -117,10 +117,7 @@
     <!-- Main Form -->
     <div v-if="screen === 'form'" class="container">
       <div class="form-title-block">
-        <span class="eyebrow">HRMS — Learning &amp; Development</span>
-        <h2>USWAG PLAN</h2>
-        <h3>Unified System for Workforce Assessment and Growth Plan</h3>
-        <p>CSU's Learning Needs Assessment (LNA) Tool</p>
+        
       </div>
 
       <!-- HEADER INFO — always visible -->
@@ -3199,7 +3196,6 @@ onMounted(async () => {
   text-align: center;
   margin-bottom: 40px;
   padding-bottom: 32px;
-  border-bottom: 3px solid var(--navy);
 }
 .form-title-block .eyebrow {
   font-size: 11px;

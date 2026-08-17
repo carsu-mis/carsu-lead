@@ -1,15 +1,5 @@
 <template>
   <div>
-    <!-- Page Nav -->
-    <div class="page-nav">
-      <NuxtLink to="/" class="back-link">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-        Back to Home
-      </NuxtLink>
-      <span class="nav-sep">/</span>
-      <span class="nav-current">Edit IDP</span>
-    </div>
-
     <!-- ── STAGE 1: IDENTITY LOOKUP ─────────────────────────────────────── -->
     <div v-if="stage === 'lookup'" class="token-wrap">
       <div class="token-card">
@@ -624,7 +614,13 @@
 
 <script setup>
 definePageMeta({ ssr: false });
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onUnmounted } from "vue";
+
+const { setPageHeader, clearPageHeader } = usePageHeader();
+setPageHeader("Edit IDP", "/");
+onUnmounted(() => {
+  clearPageHeader();
+});
 
 const config = useRuntimeConfig();
 const API = config.public.apiBase;

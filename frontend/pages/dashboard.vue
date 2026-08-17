@@ -1,15 +1,5 @@
 <template>
   <div>
-    <!-- Page Nav -->
-    <div class="page-nav">
-      <NuxtLink to="/" class="back-link">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-        Back to Home
-      </NuxtLink>
-      <span class="nav-sep">/</span>
-      <span class="nav-current">LeaD DASHBOARD</span>
-    </div>
-
     <!-- DASHBOARD -->
     <div class="dash-wrap">
       <div class="dash-head">
@@ -4299,7 +4289,13 @@ definePageMeta({
   middleware: ["hr-staff"],
 });
 
-import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
+import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+
+const { setPageHeader, clearPageHeader } = usePageHeader();
+setPageHeader("LeaD DASHBOARD", "/");
+onUnmounted(() => {
+  clearPageHeader();
+});
 
 const { getAccessToken } = useAuth();
 

@@ -130,16 +130,6 @@
 
   <!-- ── MAIN REVIEW SCREEN ── -->
   <div v-if="screen === 'review'">
-    <!-- Page nav -->
-    <div class="page-nav">
-      <a href="/" class="back-link">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-        Back to Home
-      </a>
-      <span class="nav-sep">/</span>
-      <span class="nav-current">IDP Supervisor Review</span>
-    </div>
-
     <div class="container">
       <!-- Title -->
       <div class="page-title">
@@ -625,8 +615,14 @@
 <script setup>
 definePageMeta({ middleware: ["supervisor"] });
 
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
+
+const { setPageHeader, clearPageHeader } = usePageHeader();
+setPageHeader("IDP Supervisor Review", "/");
+onUnmounted(() => {
+  clearPageHeader();
+});
 
 const config = useRuntimeConfig();
 const API = config.public.apiBase;

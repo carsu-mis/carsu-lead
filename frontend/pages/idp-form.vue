@@ -179,10 +179,6 @@
   <div v-if="stage === 'stage1'" class="container">
     <div class="form-title-block">
     
-      <p>
-        Complete all sections carefully. Your supervisor will be notified
-        automatically upon submission.
-      </p>
     </div>
 
     <!-- ── HEADER INFO ── -->
@@ -5042,7 +5038,6 @@ async function submitStage2() {
   text-align: center;
   margin-bottom: 40px;
   padding-bottom: 32px;
-  border-bottom: 2px solid var(--gold);
 }
 .form-title-block h2 {
   font-family: "Roboto", sans-serif;
