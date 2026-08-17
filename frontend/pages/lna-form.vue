@@ -169,7 +169,7 @@
 
           <!-- Office Affiliation -->
           <div class="field-group" style="margin-bottom: 20px">
-            <label>Office Affiliation <span class="req">*</span></label>
+            <label>Pillars <span class="req">*</span></label>
             <select v-model="form.officeAffiliation">
               <option value="">Select…</option>
               <option>OVPAF</option>
@@ -1275,7 +1275,7 @@
               <span class="review-value">CSU Main Campus</span>
             </div>
             <div class="review-field">
-              <span class="review-label">Office Affiliation</span>
+              <span class="review-label">Pillars</span>
               <span class="review-value">{{ form.officeAffiliation }}</span>
             </div>
             <div class="review-field">

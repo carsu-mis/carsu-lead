@@ -168,7 +168,7 @@
               <div class="ro-value">{{ idpData.campus || "—" }}</div>
             </div>
             <div class="ro-field">
-              <div class="ro-label">Office Affiliation</div>
+              <div class="ro-label">Pillars</div>
               <div class="ro-value">{{ idpData.officeAffiliation || "—" }}</div>
             </div>
             <div class="ro-field span-2">
