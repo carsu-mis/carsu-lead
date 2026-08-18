@@ -201,7 +201,7 @@ export class IdpService {
     });
     if (!record) return 'not_found';
 
-    const employeeEmail = record.user?.email ?? '';
+    const employeeEmail = record.employeeEmail ?? '';
     if (employeeEmail.toLowerCase() !== email.trim().toLowerCase())
       return 'wrong_email';
     if (record.status === 'COMPLETE') return 'locked';
@@ -268,8 +268,10 @@ export class IdpService {
     });
     if (!updated) return 'not_found';
 
-    const employeeName = updated.user ? this.getEmployeeName(updated.user) : '';
-    const employeeEmail = updated.user?.email ?? '';
+    const employeeName =
+      updated.nameOfPersonnel ||
+      [updated.firstName, updated.lastName].filter(Boolean).join(' ');
+    const employeeEmail = updated.employeeEmail ?? '';
     const frontendBase = process.env.FRONTEND_URL ?? 'http://localhost:3000';
     const reviewUrl = `${frontendBase}/idp-supervisor?token=${updated.supervisorToken}`;
 
@@ -288,8 +290,8 @@ export class IdpService {
         supervisorName: updated.supervisorName,
         employeeName,
         refId: updated.refId,
-        position: updated.user?.currentPosition ?? '',
-        officeUnit: updated.user?.collegeOfficeUnit ?? '',
+        position: updated.currentPosition ?? '',
+        officeUnit: updated.collegeOfficeUnit ?? '',
         reviewUrl,
       });
     }

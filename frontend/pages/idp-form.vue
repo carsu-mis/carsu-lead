@@ -275,6 +275,9 @@
                 style="border: none; background: transparent; padding: 10px 0; flex: 1"
               />@carsu.edu.ph
             </div>
+            <small class="email-hint" :class="emailHints.employee.type">{{
+              emailHints.employee.msg
+            }}</small>
           </div>
 
           <!-- Educational Attainment -->
@@ -4550,6 +4553,7 @@ function validateStage1() {
   form.supervisorEmail =
     (form.supervisorEmailPrefix || "").trim() + "@carsu.edu.ph";
 
+  if (!validateEmail("employee")) ok = false;
   if (!validateEmail("supervisor")) ok = false;
 
   if (!form.officeAffiliation) {
