@@ -20,8 +20,9 @@ import { UsersModule } from './users/users.module';
         password: cfg.get('DB_PASSWORD'),
         database: cfg.get('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,  // Creates tables automatically in dev.
-                            // Set to false before going to production.
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: true,  // Applies pending migrations automatically on boot.
+        synchronize: false,   // Schema is now managed by migrations, not auto-sync.
       }),
       inject: [ConfigService],
     }),
