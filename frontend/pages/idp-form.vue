@@ -180,7 +180,7 @@
     <!-- ── HEADER INFO ── -->
     <div class="section-card">
       <div class="section-header">
-        <div class="section-num">H</div>
+        <div class="section-num"></div>
         <div>
           <h3>Personnel Information</h3>
           <p>Basic details and submission purpose</p>
@@ -1275,7 +1275,7 @@
     <!-- ── H: PERSONNEL INFO (READ-ONLY) ── -->
     <div class="section-card">
       <div class="section-header">
-        <div class="section-num">H</div>
+        <div class="section-num"></div>
         <div>
           <h3>Personnel Information</h3>
           <p>Employee-submitted details</p>

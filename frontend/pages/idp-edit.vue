@@ -80,7 +80,7 @@
       <!-- ── SECTION H: EMPLOYEE INFORMATION ─────────────────────────────── -->
       <div class="section-card">
         <div class="section-header">
-          <div class="section-num">H</div>
+          <div class="section-num"></div>
           <div>
             <h3>Personnel Information</h3>
             <p>Basic details and submission purpose</p>

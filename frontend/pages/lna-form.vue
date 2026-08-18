@@ -119,7 +119,7 @@
       <!-- HEADER INFO — always visible -->
       <div class="section-card">
         <div class="section-header">
-          <div class="section-num">H</div>
+          <div class="section-num"></div>
           <div>
             <h3>Office Information</h3>
             <p>Basic details about your office and the submitter</p>
