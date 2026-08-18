@@ -503,8 +503,8 @@
                 For technical issues or questions about the LeaD system, contact
                 the HRMS office directly.
               </p>
-              <a href="mailto:hrms@carsu.edu.ph" class="help-link"
-                >hrms@carsu.edu.ph</a
+              <a href="mailto:hrmslandd@carsu.edu.ph" class="help-link"
+                >hrmslandd@carsu.edu.ph</a
               >
               <div class="help-divider"></div>
               <p class="help-note">
