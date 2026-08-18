@@ -21,7 +21,7 @@
               type="text"
               v-model="lookupRefIdSuffix"
               class="email-prefix-input"
-              placeholder="1718000000000"
+              placeholder="2026-000004"
               @keydown.enter="doLookup"
             />
           </div>
@@ -2852,7 +2852,13 @@ competencyModel["Vocational Placement Coordinator I"] = competencyModel["Guidanc
 // ── Lookup ──────────────────────────────────────────────────────────────────
 async function doLookup() {
   lookupError.value = "";
-  const suffix = lookupRefIdSuffix.value.trim().toUpperCase();
+  let suffix = lookupRefIdSuffix.value.trim().toUpperCase();
+  // Accept both "2026-000004" and "2026000004" — normalize to the
+  // "YYYY-NNNNNN" format the backend actually generates and stores.
+  suffix = suffix.replace(/^IDP-?/, ""); // in case they pasted the full "IDP-..." value
+  if (/^\d{4}\d+$/.test(suffix) && !suffix.includes("-")) {
+    suffix = `${suffix.slice(0, 4)}-${suffix.slice(4)}`;
+  }
   lookupRefId.value = suffix ? `IDP-${suffix}` : '';
   const refId = lookupRefId.value;
   const emailPrefix = lookupEmailPrefix.value.trim().toLowerCase();
