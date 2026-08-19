@@ -73,6 +73,7 @@ export class LnaService {
       dataSourcesRaw: data.dataSourcesRaw ?? null,
       dataSourceInsights: data.dataSourceInsights ?? null,
       leadInterventions: data.leadInterventions ?? null,
+      proactRows: data.proactRows ?? null,
     });
 
     const saved = await this.repo.save(record);

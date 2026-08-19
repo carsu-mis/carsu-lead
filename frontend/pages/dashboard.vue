@@ -2600,6 +2600,113 @@
                 }}
               </div>
             </template>
+
+            <template v-if="lnaSubTab === 'proact'">
+              <div class="adv-filter-section-label">Pro-ACT Entries</div>
+              <div class="adv-filter-row">
+                <div class="adv-filter-group">
+                  <label class="adv-label">Target Skill / Gap</label>
+                  <select v-model="lnaProactSkillFilter" class="adv-select">
+                    <option value="">All</option>
+                    <option
+                      v-for="o in lnaProactSkillOptions"
+                      :key="o.v"
+                      :value="o.v"
+                    >
+                      {{ o.v }} ({{ o.c }})
+                    </option>
+                  </select>
+                </div>
+                <div class="adv-filter-group">
+                  <label class="adv-label">Training / Intervention Title</label>
+                  <select v-model="lnaProactTitleFilter" class="adv-select">
+                    <option value="">All</option>
+                    <option
+                      v-for="o in lnaProactTitleOptions"
+                      :key="o.v"
+                      :value="o.v"
+                    >
+                      {{ o.v }} ({{ o.c }})
+                    </option>
+                  </select>
+                </div>
+                <div class="adv-filter-group">
+                  <label class="adv-label">Mode of Activity</label>
+                  <select v-model="lnaProactModeFilter" class="adv-select">
+                    <option value="">All</option>
+                    <option
+                      v-for="o in lnaProactModeOptions"
+                      :key="o.v"
+                      :value="o.v"
+                    >
+                      {{ o.v }} ({{ o.c }})
+                    </option>
+                  </select>
+                </div>
+                <div class="adv-filter-group">
+                  <label class="adv-label">Trainer / Provider</label>
+                  <select v-model="lnaProactProviderFilter" class="adv-select">
+                    <option value="">All</option>
+                    <option
+                      v-for="o in lnaProactProviderOptions"
+                      :key="o.v"
+                      :value="o.v"
+                    >
+                      {{ o.v }} ({{ o.c }})
+                    </option>
+                  </select>
+                </div>
+                <div class="adv-filter-group">
+                  <label class="adv-label">Target Timeline</label>
+                  <select v-model="lnaProactTimelineFilter" class="adv-select">
+                    <option value="">All</option>
+                    <option
+                      v-for="o in lnaProactTimelineOptions"
+                      :key="o.v"
+                      :value="o.v"
+                    >
+                      {{ o.v }} ({{ o.c }})
+                    </option>
+                  </select>
+                </div>
+                <button
+                  class="btn-clear-adv"
+                  @click="
+                    lnaProactSkillFilter = '';
+                    lnaProactTitleFilter = '';
+                    lnaProactModeFilter = '';
+                    lnaProactProviderFilter = '';
+                    lnaProactTimelineFilter = '';
+                  "
+                >
+                  Clear
+                </button>
+              </div>
+              <div
+                v-if="
+                  lnaProactSkillFilter ||
+                  lnaProactTitleFilter ||
+                  lnaProactModeFilter ||
+                  lnaProactProviderFilter ||
+                  lnaProactTimelineFilter
+                "
+                class="adv-who-count"
+              >
+                <span class="adv-who-num">{{
+                  filteredLnaProactRows.length
+                }}</span>
+                entr{{ filteredLnaProactRows.length !== 1 ? "ies" : "y" }} match
+                &nbsp;·&nbsp;
+                <span class="adv-who-num">{{
+                  new Set(filteredLnaProactRows.map((r) => r.refId)).size
+                }}</span>
+                unique office{{
+                  new Set(filteredLnaProactRows.map((r) => r.refId)).size !== 1
+                    ? "s"
+                    : ""
+                }}
+              </div>
+            </template>
           </div>
         </transition>
 
@@ -3050,6 +3157,41 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- SECTION IV: PRO-ACT -->
+        <div v-if="lnaSubTab === 'proact'" class="tbl-wrap">
+          <table class="dtbl">
+            <thead>
+              <tr>
+                <th>Ref ID</th>
+                <th>Office / Unit</th>
+                <th>Year</th>
+                <th>Target Skill / Gap</th>
+                <th>Training / Intervention Title</th>
+                <th>Mode of Activity</th>
+                <th>Trainer / Provider</th>
+                <th>Target Timeline</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!filteredLnaProactRows.length" class="empty-row">
+                <td colspan="8">No Pro-ACT data found.</td>
+              </tr>
+              <tr v-for="r in filteredLnaProactRows" :key="r._key">
+                <td>
+                  <code class="ref-code">{{ r.refId }}</code>
+                </td>
+                <td>{{ r.office || "—" }}</td>
+                <td>{{ r.year || "—" }}</td>
+                <td>{{ r.targetSkill || "—" }}</td>
+                <td>{{ r.trainingTitle || "—" }}</td>
+                <td>{{ r.modeOfActivity || "—" }}</td>
+                <td>{{ r.trainerProvider || "—" }}</td>
+                <td>{{ r.targetTimeline || "—" }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -4131,10 +4273,57 @@
             </div>
           </div>
 
-          <!-- ── SECTION IV: Certification ── -->
+          <!-- ── SECTION IV: Pro-ACT ── -->
           <div class="m-section">
             <div class="m-section-title">
-              Section IV — Certification <span class="m-badge">Rater</span>
+              Section IV — Pro-ACT
+              <span class="m-badge">Capacity-Building &amp; Trainings</span>
+            </div>
+            <table class="m-table" v-if="(selectedLNA._proactRows || []).length">
+              <thead>
+                <tr>
+                  <th style="width: 36px">No.</th>
+                  <th>Target Skill / Competency Gap</th>
+                  <th>Training / Intervention Title</th>
+                  <th>Mode of Activity</th>
+                  <th>Trainer / Provider</th>
+                  <th>Target Timeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, i) in selectedLNA._proactRows || []" :key="i">
+                  <td
+                    style="
+                      text-align: center;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                  >
+                    {{ i + 1 }}
+                  </td>
+                  <td>{{ row.targetSkill || "—" }}</td>
+                  <td>
+                    {{
+                      (row.trainingTitle === "__others__"
+                        ? row.trainingTitleOther
+                        : row.trainingTitle) || "—"
+                    }}
+                  </td>
+                  <td>{{ row.modeOfActivity || "—" }}</td>
+                  <td>{{ row.trainerProvider || "—" }}</td>
+                  <td>{{ row.targetTimeline || "—" }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <span v-else style="font-size: 13px; color: var(--text-light)"
+              >No Pro-ACT entries recorded.</span
+            >
+          </div>
+
+          <!-- ── Certification ── -->
+          <div class="m-section">
+            <div class="m-section-title">
+              Certification <span class="m-badge">Rater</span>
             </div>
             <div
               style="
@@ -4399,6 +4588,11 @@ const lnaHasSourcesFilter = ref("");
 const lnaInsightSourceFilter = ref("");
 const lnaInsightPersonnelFilter = ref("");
 const lnaInsightInterventionFilter = ref("");
+const lnaProactSkillFilter = ref("");
+const lnaProactTitleFilter = ref("");
+const lnaProactModeFilter = ref("");
+const lnaProactProviderFilter = ref("");
+const lnaProactTimelineFilter = ref("");
 
 // ── LNA Section II accordion state ─────────────────────────────────────────
 const comp2Expanded = ref(new Set());
@@ -4476,6 +4670,7 @@ const lnaSubTabs = [
   { key: "workforce", label: "Section I — Workforce", icon: "👥" },
   { key: "competency", label: "Section II — Competency", icon: "🎯" },
   { key: "sources", label: "Section III — Data Sources", icon: "📊" },
+  { key: "proact", label: "Section IV — Pro-ACT", icon: "📚" },
 ];
 
 const idpCols = [
@@ -5144,6 +5339,29 @@ const lnaInsightRows = computed(() => {
   });
   return out;
 });
+const lnaProactRows = computed(() => {
+  const out = [];
+  filteredLNAs.value.forEach((r) => {
+    (r._proactRows || []).forEach((row, i) => {
+      out.push({
+        _key: `${r.refId}-proact${i}`,
+        refId: r.refId,
+        office: r.office,
+        campus: r.campus,
+        year: r.yearCovered,
+        targetSkill: row.targetSkill,
+        trainingTitle:
+          row.trainingTitle === "__others__"
+            ? row.trainingTitleOther
+            : row.trainingTitle,
+        modeOfActivity: row.modeOfActivity,
+        trainerProvider: row.trainerProvider,
+        targetTimeline: row.targetTimeline,
+      });
+    });
+  });
+  return out;
+});
 // ── COMPUTED — LNA ADVANCED FILTER OPTIONS ─────────────────────────────────
 const lnaPurposeOptions = computed(() => {
   const freq = {};
@@ -5390,6 +5608,72 @@ const filteredInsightRows = computed(() =>
   ),
 );
 
+const lnaProactSkillOptions = computed(() => {
+  const freq = {};
+  lnaProactRows.value.forEach((r) => {
+    const v = (r.targetSkill || "").trim();
+    if (v) freq[v] = (freq[v] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([v, c]) => ({ v, c }));
+});
+const lnaProactTitleOptions = computed(() => {
+  const freq = {};
+  lnaProactRows.value.forEach((r) => {
+    const v = (r.trainingTitle || "").trim();
+    if (v) freq[v] = (freq[v] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([v, c]) => ({ v, c }));
+});
+const lnaProactModeOptions = computed(() => {
+  const freq = {};
+  lnaProactRows.value.forEach((r) => {
+    const v = (r.modeOfActivity || "").trim();
+    if (v) freq[v] = (freq[v] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([v, c]) => ({ v, c }));
+});
+const lnaProactProviderOptions = computed(() => {
+  const freq = {};
+  lnaProactRows.value.forEach((r) => {
+    const v = (r.trainerProvider || "").trim();
+    if (v) freq[v] = (freq[v] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([v, c]) => ({ v, c }));
+});
+const lnaProactTimelineOptions = computed(() => {
+  const freq = {};
+  lnaProactRows.value.forEach((r) => {
+    const v = (r.targetTimeline || "").trim();
+    if (v) freq[v] = (freq[v] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([v, c]) => ({ v, c }));
+});
+const filteredLnaProactRows = computed(() =>
+  lnaProactRows.value.filter(
+    (r) =>
+      (!lnaProactSkillFilter.value ||
+        r.targetSkill === lnaProactSkillFilter.value) &&
+      (!lnaProactTitleFilter.value ||
+        r.trainingTitle === lnaProactTitleFilter.value) &&
+      (!lnaProactModeFilter.value ||
+        r.modeOfActivity === lnaProactModeFilter.value) &&
+      (!lnaProactProviderFilter.value ||
+        r.trainerProvider === lnaProactProviderFilter.value) &&
+      (!lnaProactTimelineFilter.value ||
+        r.targetTimeline === lnaProactTimelineFilter.value),
+  ),
+);
+
 // ── STATS ──────────────────────────────────────────────────────────────────
 const ovFilteredIdps = computed(() => idps.value);
 const ovFilteredLnas = computed(() => lnas.value);
@@ -5594,6 +5878,7 @@ function normalizeLNA(raw) {
     _clusterSummary: safeArray(raw.clusterSummaryRaw ?? raw.clusterSummary),
     _dataSources: safeArray(raw.dataSourcesRaw ?? raw.dataSources),
     _insightRows: safeArray(raw.dataSourceInsights),
+    _proactRows: safeArray(raw.proactRows),
   };
 }
 const topCompetencyGaps = computed(() => {

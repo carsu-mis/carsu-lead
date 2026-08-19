@@ -47,6 +47,7 @@ export class Lna {
   @Column({ type: 'jsonb', nullable: true }) dataSourcesRaw: any;
   @Column({ type: 'jsonb', nullable: true }) dataSourceInsights: any;
   @Column({ type: 'jsonb', nullable: true }) leadInterventions: any;
+  @Column({ type: 'jsonb', nullable: true }) proactRows: any;
 
   @CreateDateColumn() submittedAt: Date;
 }

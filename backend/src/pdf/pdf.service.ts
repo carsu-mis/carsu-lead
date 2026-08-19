@@ -376,7 +376,6 @@ export class PdfService {
     const clusterSumRaw = lna.clusterSummaryRaw ?? {};
     const dataSources = lna.dataSourcesRaw ?? [];
     const insights = lna.dataSourceInsights ?? [];
-    const interventions = lna.leadInterventions ?? [];
     const officeName = lna.office || '';
     const certName = lna.headOfUnit || '';
 
@@ -611,20 +610,29 @@ export class PdfService {
             .join('')
         : `<tr><td colspan="5" style="${tdStyle}text-align:center;color:#888;font-style:italic;">No insights recorded.</td></tr>`;
 
-    // LeaD interventions
-    const interventionRowsHtml =
-      Array.isArray(interventions) && interventions.length
-        ? interventions
-            .map(
-              (r: any, i: number) =>
-                `<tr><td style="${i % 2 === 0 ? tdStyle : tdAlt}text-align:center;">${i + 1}</td>
-           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.cluster)}</td>
-           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.intervention)}</td>
-           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.timeline)}</td>
-           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.remarks)}</td></tr>`,
-            )
+    // Section IV — Pro-ACT (Professional Advancement through Capacity-
+    // Building and Trainings). Field names match what the LNA form actually
+    // submits (targetSkill/trainingTitle/modeOfActivity/trainerProvider/
+    // targetTimeline) — NOT the older leadInterventions shape, which this
+    // table used to (incorrectly) reference.
+    const proactRows = lna.proactRows ?? [];
+    const proactRowsHtml =
+      Array.isArray(proactRows) && proactRows.length
+        ? proactRows
+            .map((r: any, i: number) => {
+              const trainingTitle =
+                r.trainingTitle === '__others__'
+                  ? r.trainingTitleOther
+                  : r.trainingTitle;
+              return `<tr><td style="${i % 2 === 0 ? tdStyle : tdAlt}text-align:center;">${i + 1}</td>
+           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.targetSkill)}</td>
+           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(trainingTitle)}</td>
+           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.modeOfActivity)}</td>
+           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.trainerProvider)}</td>
+           <td style="${i % 2 === 0 ? tdStyle : tdAlt}">${s(r.targetTimeline)}</td></tr>`;
+            })
             .join('')
-        : `<tr><td colspan="5" style="${tdStyle}text-align:center;color:#888;font-style:italic;">No interventions recorded.</td></tr>`;
+        : `<tr><td colspan="6" style="${tdStyle}text-align:center;color:#888;font-style:italic;">No Pro-ACT entries recorded.</td></tr>`;
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -731,9 +739,27 @@ export class PdfService {
   </div>
 </div>
 
-<!-- SECTION IV: Certification -->
+<!-- SECTION IV: Pro-ACT -->
 <div class="section">
-  <div class="section-header"><span class="section-num">IV</span><h2>Certification</h2></div>
+  <div class="section-header"><span class="section-num">IV</span><h2>Professional Advancement through Capacity-Building and Trainings (Pro-ACT)</h2></div>
+  <div class="section-body">
+    <table>
+      <thead><tr>
+        <th style="${thStyle}width:30px;">No.</th>
+        <th style="${thStyle}">Target Skill / Competency Gap</th>
+        <th style="${thStyle}">Training / Intervention Title</th>
+        <th style="${thStyle}">Mode of Activity</th>
+        <th style="${thStyle}">Trainer / Provider</th>
+        <th style="${thStyle}">Target Timeline</th>
+      </tr></thead>
+      <tbody>${proactRowsHtml}</tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Certification -->
+<div class="section">
+  <div class="section-header"><h2>Certification</h2></div>
   <div class="section-body">
     <p style="font-size:11px;color:#666;font-style:italic;margin-bottom:14px;">
       I hereby certify that the information provided in this Learning Needs Assessment is accurate and based on actual observation, data, and evidence gathered from the office.
