@@ -2382,7 +2382,9 @@ const LEVEL_LABEL = {
 // Competency absent from a position = key not present (excluded from dropdown)
 // Dropdown options for the Position field — derived from competencyModel's own
 // keys so the list can never fall out of sync with the required-level lookup.
-const positionOptions = computed(() => Object.keys(competencyModel));
+const positionOptions = computed(() =>
+  Object.keys(competencyModel).sort((a, b) => a.localeCompare(b)),
+);
 
 const competencyModel = {
   // ── ADMIN AIDE I – Utility ──────────────────────────────────────────
