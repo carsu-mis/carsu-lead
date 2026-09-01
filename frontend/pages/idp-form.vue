@@ -501,12 +501,12 @@
                         :label="cluster"
                       >
                         <option
-                          v-for="comp in allCompetencies[cluster]"
-                          :key="comp"
-                          :value="comp"
-                        >
-                          {{ comp }}
-                        </option>
+  v-for="comp in filterCompetenciesByPosition(allCompetencies[cluster])"
+  :key="comp"
+  :value="comp"
+>
+  {{ comp }}
+</option>
                       </optgroup>
                     </select>
                   </td>
@@ -4402,6 +4402,108 @@ competencyModel["Veterinarian II"] = competencyModel["Physician"];
 // Guidance/placement role — alias to Guidance Counselor III
 competencyModel["Vocational Placement Coordinator I"] =
   competencyModel["Guidance Counselor III"];
+
+  // ── Attorney (additional levels) ─────────────────────────────────────────────
+competencyModel["Attorney I"] = competencyModel["Attorney II"];
+
+// ── Board Secretary (additional levels) ──────────────────────────────────────
+competencyModel["Board Secretary II"] = competencyModel["Board Secretary V"];
+competencyModel["Board Secretary III"] = competencyModel["Board Secretary V"];
+competencyModel["Board Secretary IV"] = competencyModel["Board Secretary V"];
+
+// ── College Librarian (additional levels) ────────────────────────────────────
+competencyModel["College Librarian II"] =
+  competencyModel["College Librarian I"];
+
+// ── Cook (additional levels) ─────────────────────────────────────────────────
+competencyModel["Cook III"] = competencyModel["Admin Aide IV – Mechanic"];
+
+// ── Dentist (additional levels) ──────────────────────────────────────────────
+competencyModel["Dentist I"] = competencyModel["Nurse II"];
+competencyModel["Dentist III"] = competencyModel["Nurse II"];
+
+// ── Dormitory Manager (additional levels) ────────────────────────────────────
+competencyModel["Dormitory Manager I"] = competencyModel["Admin Officer III"];
+competencyModel["Dormitory Manager II"] = competencyModel["Admin Officer III"];
+
+// ── Food Service Supervisor (additional levels) ──────────────────────────────
+competencyModel["Food Service Supervisor I"] =
+  competencyModel["Admin Officer I"];
+competencyModel["Food Service Supervisor III"] =
+  competencyModel["Admin Officer I"];
+
+// ── Farm Worker (additional levels) ──────────────────────────────────────────
+competencyModel["Farm Worker III"] = competencyModel["Farm Worker I"];
+
+// ── Executive Assistant (additional levels) ──────────────────────────────────
+competencyModel["Executive Assistant I"] =
+  competencyModel["Admin Assistant IV"];
+competencyModel["Executive Assistant II"] =
+  competencyModel["Admin Assistant IV"];
+
+// ── Guidance (additional levels) ─────────────────────────────────────────────
+competencyModel["Guidance Coordinator II"] =
+  competencyModel["Guidance Counselor III"];
+competencyModel["Guidance Coordinator III"] =
+  competencyModel["Guidance Counselor III"];
+competencyModel["Guidance Counselor II"] =
+  competencyModel["Guidance Counselor III"];
+
+// ── Heavy Equipment Operator (additional levels) ─────────────────────────────
+competencyModel["Heavy Equipment Operator II"] =
+  competencyModel["Admin Aide IV – Mechanic"];
+competencyModel["Heavy Equipment Operator III"] =
+  competencyModel["Admin Aide IV – Mechanic"];
+
+// ── Houseparent (additional levels) ──────────────────────────────────────────
+competencyModel["Houseparent I"] = competencyModel["Admin Officer I"];
+competencyModel["Houseparent III"] = competencyModel["Admin Officer I"];
+
+// ── Information Systems Analyst (additional levels) ──────────────────────────
+competencyModel["Information Systems Analyst III"] =
+  competencyModel["System Analyst"];
+
+// ── Information Technology Officer (additional levels) ──────────────────────
+competencyModel["Information Technology Officer II"] =
+  competencyModel["System Analyst"];
+competencyModel["Information Technology Officer III"] =
+  competencyModel["System Analyst"];
+
+// ── Legal Assistant (additional levels) ──────────────────────────────────────
+competencyModel["Legal Assistant I"] = competencyModel["Attorney II"];
+
+// ── Machinist (additional levels) ────────────────────────────────────────────
+competencyModel["Machinist II"] = competencyModel["Admin Aide IV – Mechanic"];
+competencyModel["Machinist III"] = competencyModel["Admin Aide IV – Mechanic"];
+
+// ── Nurse (additional levels) ─────────────────────────────────────────────────
+competencyModel["Nurse III"] = competencyModel["Nurse II"];
+
+// ── Programmer (additional levels) ───────────────────────────────────────────
+competencyModel["Programmer I"] = competencyModel["Programmer II"];
+competencyModel["Programmer III"] = competencyModel["Programmer II"];
+
+// ── Security Guard (additional levels) ───────────────────────────────────────
+competencyModel["Security Guard II"] = competencyModel["Security Guard I"];
+competencyModel["Security Guard III"] = competencyModel["Security Guard I"];
+
+// ── School Farming Coordinator (additional levels) ───────────────────────────
+competencyModel["School Farming Coordinator II"] =
+  competencyModel["Farm Worker I"];
+competencyModel["School Farming Coordinator III"] =
+  competencyModel["Farm Worker I"];
+
+// ── Veterinarian (additional levels) ─────────────────────────────────────────
+competencyModel["Veterinarian I"] = competencyModel["Physician"];
+competencyModel["Veterinarian III"] = competencyModel["Physician"];
+
+function filterCompetenciesByPosition(list) {
+  const pos = form.currentPosition;
+  if (!pos || pos === "Director") return list;
+  const posData = competencyModel[pos];
+  if (!posData || Object.keys(posData).length === 0) return list;
+  return list.filter((c) => posData[c] !== undefined && posData[c] !== null);
+}
 
 function getRequiredLevel(competency, position) {
   if (!competency || !position) return "";
