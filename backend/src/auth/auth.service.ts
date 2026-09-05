@@ -14,41 +14,68 @@ import { User, UserRole } from '../users/user.entity';
 import { RefreshToken } from './refresh-token.entity';
 import { PasswordResetToken } from './password-reset-token.entity';
 import { MailService } from '../mail/mail.service';
+import { LdapEmployee } from 'src/auth/ldap.helper';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(RefreshToken) private tokenRepo: Repository<RefreshToken>,
-     @InjectRepository(PasswordResetToken)
+    @InjectRepository(PasswordResetToken)
     private resetTokenRepo: Repository<PasswordResetToken>,
     private jwt: JwtService,
     private cfg: ConfigService,
     private mail: MailService,
+    
+    private ldapEmployee: LdapEmployee,
   ) {}
 
   // ── Register (email/password) ──────────────────────────────────────
-async register(email: string, password: string, firstName?: string, lastName?: string) {
-  const existing = await this.userRepo.findOne({ where: { email } });
-  if (existing) {
-    throw new ConflictException('Email already in use.');
+  async register(email: string, password: string, firstName?: string, lastName?: string) {
+    const existing = await this.userRepo.findOne({ where: { email } });
+    if (existing) {
+      throw new ConflictException('Email already in use.');
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = this.userRepo.create({ email, password: hashed, firstName, lastName });
+    await this.userRepo.save(user);
+
+    return this.login(email, password); // reuse login to return tokens
   }
-
-  const hashed = await bcrypt.hash(password, 10);
-  const user = this.userRepo.create({ email, password: hashed, firstName, lastName });
-  await this.userRepo.save(user);
-
-  return this.login(email, password); // reuse login to return tokens
-}
 
   // ── Login (email/password) ─────────────────────────────────────────
   async login(email: string, password: string) {
+    // ldap authentication
+    const username = `${email}`.toLowerCase().split('@')[0];
+    const authUser = await this.ldapEmployee.authenticate(
+      username,
+      password,
+    );
+    // if Ldap authenticated, check if user exists in our database. 
     const user = await this.userRepo.findOne({ where: { email } });
-    if (!user || !user.password)
-      throw new UnauthorizedException('Invalid credentials.');
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new UnauthorizedException('Invalid credentials.');
-    return this.issueTokens(user);
+    // If not, register the user with the given email and password. 
+    if (!user) {
+      const hashed = await bcrypt.hash(password, 10);
+      const user = this.userRepo.create({ email, password: hashed, firstName: authUser.givenName, lastName: authUser.sn });
+      await this.userRepo.save(user);
+    }
+
+    // If the user exists, compare the provided password with the stored hashed password. 
+      // If they match, issue tokens; 
+      // otherwise, reset user password.
+    if (user) {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        const hashed = await bcrypt.hash(password, 10);
+        await this.userRepo.update(user.id, { password: hashed });
+      }
+    }
+
+    if (user && authUser) {
+      // If the user exists and is authenticated via LDAP, issue tokens.
+      return this.issueTokens(user);
+    }
   }
 
   // ── HR/Admin passwordless login (email only) ─────────────────────────

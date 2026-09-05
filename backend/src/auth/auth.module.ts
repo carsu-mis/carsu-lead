@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailModule } from '../mail/mail.module';  
+import { LdapEmployee } from 'src/auth/ldap.helper';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { MailModule } from '../mail/mail.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, LdapEmployee],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
