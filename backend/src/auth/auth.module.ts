@@ -10,11 +10,12 @@ import { PasswordResetToken } from './password-reset-token.entity';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { MailModule } from '../mail/mail.module';  
+import { MailModule } from '../mail/mail.module';
+import { LdapEmployee } from './ldap.helper';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, RefreshToken, PasswordResetToken]), // ← updated
+    TypeOrmModule.forFeature([User, RefreshToken, PasswordResetToken]),
     MailModule,
     PassportModule,
     JwtModule.registerAsync({
@@ -27,7 +28,7 @@ import { MailModule } from '../mail/mail.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule],
-})
+  providers: [AuthService, JwtStrategy, LdapEmployee],
+  exports: [AuthService, JwtModule, LdapEmployee],
+}) 
 export class AuthModule {}
