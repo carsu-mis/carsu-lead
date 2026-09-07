@@ -52,6 +52,7 @@ export class LdapEmployee {
       const isInvalidCredentials =
         error.code === 49 ||
         error.statusCode === 49 ||
+        `${error}`.toLowerCase().includes('Code: 0x31') ||
         errorMessage.toLowerCase().includes('invalid credentials') ||
         errorMessage.toLowerCase().includes('invalidcredentialserror') ||
         errorMessage.toLowerCase().includes('data 52e'); // Active Directory specific code for bad password

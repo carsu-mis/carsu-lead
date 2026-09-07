@@ -16,6 +16,12 @@ services:
     restart: always
     ports:
       - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./backend/.env
+    command: npm run start:dev
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -30,6 +36,7 @@ services:
       MAIL_FROM: ${MAIL_FROM}
     depends_on:
       - db
+
 
   frontend:
     build: ./frontend
