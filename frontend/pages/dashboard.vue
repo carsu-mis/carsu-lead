@@ -7,19 +7,6 @@
           <h1>LeaD Dashboard</h1>
           <p>{{ lastUpdated }}</p>
         </div>
-        <button
-          class="btn-refresh"
-          :class="{ spinning: dataLoading }"
-          @click="loadDashboard"
-        >
-          <svg viewBox="0 0 24 24">
-            <path d="M23 4v6h-6" />
-            <path d="M1 20v-6h6" />
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
-            <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
-          </svg>
-          Refresh
-        </button>
       </div>
 
       <!-- MAIN TABS -->
@@ -32,6 +19,22 @@
           @click="activeTab = tab.key"
         >
           {{ tab.icon }} {{ tab.label }}
+        </button>
+      </div>
+
+      <div class="table-refresh-row">
+        <button
+          class="btn-refresh"
+          :class="{ spinning: dataLoading }"
+          @click="loadDashboard"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M23 4v6h-6" />
+            <path d="M1 20v-6h6" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+            <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
+          </svg>
+          Refresh
         </button>
       </div>
 
@@ -6377,7 +6380,7 @@ async function downloadPDF(type, refId, name) {
 const regMenuOpen = ref(null);
 const { user: authUser, fetchMe } = useAuth();
 const isMasterAdmin = computed(
-  () => authUser.value?.email === "altheaguila.gorres@carsu.edu.ph",
+  () => authUser.value?.email === "apgorres@carsu.edu.ph",
 );
 const regMenuOpenUp = ref(false);
 
@@ -6791,6 +6794,11 @@ body,
   margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 14px;
+}
+.table-refresh-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
 }
 .dash-head-left h1 {
   font-family: "Roboto", sans-serif;

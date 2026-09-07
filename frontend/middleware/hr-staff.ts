@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async () => {
   // If still not logged in after refresh attempt, redirect to the
   // HR/Admin login (separate from the employee login).
   if (!isLoggedIn.value) {
-    return navigateTo("/hr-login");
+    return navigateTo("/login");
   }
 
   const isHrStaff =

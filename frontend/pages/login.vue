@@ -25,7 +25,7 @@
         <input
           v-model="password"
           type="password"
-          placeholder="••••••••"
+          placeholder=""
           @keyup.enter="login"
         />
       </div>
@@ -33,15 +33,6 @@
     <button class="btn-primary" :disabled="loading" @click="login">
         {{ loading ? "Signing in…" : "Sign In" }}
       </button>
-
-      <p class="forgot-link">
-        <NuxtLink to="/forgot-password">Forgot password?</NuxtLink>
-      </p>
-
-      <p class="switch-link">
-        No account yet?
-        <NuxtLink to="/register">Create one here</NuxtLink>
-      </p>
     </div>
   </div>
 </template>
