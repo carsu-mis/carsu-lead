@@ -19,7 +19,7 @@ import { UserRole } from './user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
+  
   @Get('me')
   getMe(@Req() req: any) {
     return req.user;
