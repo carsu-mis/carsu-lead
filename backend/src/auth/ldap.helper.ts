@@ -52,10 +52,11 @@ export class LdapEmployee {
       const isInvalidCredentials =
         error.code === 49 ||
         error.statusCode === 49 ||
-        `${error}`.toLowerCase().includes('Code: 0x31') ||
         errorMessage.toLowerCase().includes('invalid credentials') ||
         errorMessage.toLowerCase().includes('invalidcredentialserror') ||
-        errorMessage.toLowerCase().includes('data 52e'); // Active Directory specific code for bad password
+        errorMessage.toLowerCase().includes('data 52e')||
+        errorMessage.includes('0x31') ||
+        errorMessage.includes('code: 0x31'); // Active Directory specific code for bad password
 
       if (isInvalidCredentials) {
         throw new UnauthorizedException('Wrong username or password.');
