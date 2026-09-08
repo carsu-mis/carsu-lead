@@ -3327,6 +3327,7 @@
                       <template v-if="u.role !== 'admin'">
                         <button
                           class="reg-dd-item"
+                          title="Grants full system access — can manage all users, roles, and data."
                           @click="
                             regAction(() =>
                               openConfirm({
@@ -3345,6 +3346,7 @@
                       <template v-if="u.role === 'admin' && isMasterAdmin">
                         <button
                           class="reg-dd-item reg-dd-danger"
+                          title="Removes Admin access — they become a regular Employee with no dashboard access."
                           @click="
                             regAction(() =>
                               openConfirm({
@@ -3365,6 +3367,7 @@
                       >
                         <button
                           class="reg-dd-item"
+                          title="Grants access to the HR Dashboard (view submissions, HR Registry) without full Admin permissions."
                           @click="
                             regAction(() =>
                               openConfirm({
@@ -3383,6 +3386,7 @@
                       <template v-if="u.role === 'hr-staff'">
                         <button
                           class="reg-dd-item reg-dd-warn"
+                          title="Removes HR Staff access — they lose access to the dashboard."
                           @click="
                             regAction(() =>
                               openConfirm({
@@ -3403,6 +3407,7 @@
                       <button
                         v-if="!u.isSupervisor"
                         class="reg-dd-item"
+                        title="Allows this person to submit LNA (Learning Needs Assessment) forms for their office."
                         @click="
                           regAction(() =>
                             openConfirm({
@@ -3420,6 +3425,7 @@
                       <button
                         v-else
                         class="reg-dd-item reg-dd-warn"
+                        title="Removes their ability to submit LNA forms."
                         @click="
                           regAction(() =>
                             openConfirm({
@@ -3439,6 +3445,7 @@
                         <div class="reg-dd-divider"></div>
                         <button
                           class="reg-dd-item reg-dd-danger"
+                          title="Permanently deletes this user's account and role from the system. This cannot be undone."
                           @click="
                             regAction(() =>
                               openConfirm({
