@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from './user.entity';
-
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -25,7 +25,6 @@ export class UsersController {
     return req.user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me')
   updateMe(@Req() req: any, @Body() body: any) {
     return this.usersService.updateProfile(req.user.id, body);
