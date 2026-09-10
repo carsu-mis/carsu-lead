@@ -48,7 +48,7 @@ FROM node:20
   RUN npm install
 
   COPY . .
-  RUN npm run build
+  RUN npm run production
 
   EXPOSE 3001
 
