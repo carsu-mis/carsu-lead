@@ -5,12 +5,12 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
- @Post('register')
-async register(
-  @Body() body: { email: string; password: string; firstName?: string; lastName?: string },
-) {
-  return this.authService.register(body.email, body.password, body.firstName, body.lastName);
-}
+  @Post('register')
+  async register(
+    @Body() body: { email: string; password: string; firstName?: string; lastName?: string },
+  ) {
+    return this.authService.register(body.email, body.password, body.firstName, body.lastName);
+  }
 
   @Post('login')
   login(@Body() body: { email: string; password: string }) {
@@ -31,12 +31,12 @@ async register(
   }
 
   @Post('forgot-password')
-forgotPassword(@Body() body: { email: string }) {
-  return this.authService.forgotPassword(body.email);
-}
+  forgotPassword(@Body() body: { email: string }) {
+    return this.authService.forgotPassword(body.email);
+  }
 
-@Post('reset-password')
-resetPassword(@Body() body: { token: string; newPassword: string }) {
-  return this.authService.resetPassword(body.token, body.newPassword);
-}
+  @Post('reset-password')
+  resetPassword(@Body() body: { token: string; newPassword: string }) {
+    return this.authService.resetPassword(body.token, body.newPassword);
+  }
 }
