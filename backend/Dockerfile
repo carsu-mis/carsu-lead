@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 
