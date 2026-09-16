@@ -3,16 +3,14 @@ FROM node:20-slim
 WORKDIR /app
 
 ENV NODE_ENV=production
-
-# Prevent npm ci from downloading heavy Chromium binaries
+# Explicitly block Chromium binary fetch
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 COPY package*.json ./
-RUN npm ci --loglevel=error
+RUN npm ci --prefer-offline --no-audit
 
 COPY . .
 
-# Compile NestJS / TypeScript
 RUN npm run build
 
 EXPOSE 3001
