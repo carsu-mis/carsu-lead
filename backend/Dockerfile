@@ -1,14 +1,9 @@
 FROM node:20
 
-  WORKDIR /app
+WORKDIR /app
 
-  # Puppeteer bundles its own Chrome binary, but the base node:20 (Debian)
-  # image doesn't ship the shared libraries Chrome needs at runtime
-  # (e.g. libnspr4.so, libnss3.so). Without these, PDF generation fails
-  # with "error while loading shared libraries", which — since PDF
-  # generation runs before the email sends in lna.service.ts/idp.service.ts —
-  # silently skips every email for that submission.
-  RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install Puppeteer system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     fonts-liberation \
     libasound2 \
@@ -44,12 +39,15 @@ FROM node:20
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-  COPY package*.json ./
-  RUN npm install
+COPY package*.json ./
+RUN npm ci
 
-  COPY . .
-  RUN npm run production
+COPY . .
 
-  EXPOSE 3001
+# Compile TypeScript / build dist folder (DO NOT run web server here)
+RUN npm run build
 
-  CMD ["node", "dist/main"]
+EXPOSE 3001
+
+# Boot application container
+CMD ["node", "dist/main"]
