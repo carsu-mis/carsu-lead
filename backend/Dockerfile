@@ -1,40 +1,31 @@
-FROM node:20
+FROM node:20-slim
 
 WORKDIR /app
 
-# Install system dependencies required for Puppeteer / Headless Chrome
+# Install system dependencies required for Puppeteer / Headless Chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    fonts-liberation \
-    libnss3 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libgbm1 \
-    libasound2dev \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm-dev \
-    libxkbcommon0 \
-    libpango-1.0-0 \
-    libcairo2 \
-    libasound2 \
     chromium \
+    fonts-liberation \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Skip downloading bundled Chromium if using the system chromium package
+# Tell Puppeteer to use system-installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV NODE_ENV=production
 
+# Copy dependency definitions first to utilize Docker layer caching
 COPY package*.json ./
 RUN npm ci
 
+# Copy remaining source code
 COPY . .
+
+# Build the TypeScript production dist/ directory
 RUN npm run build
 
+# Expose backend service port
 EXPOSE 3001
 
+# Boot application from compiled main entrypoint
 CMD ["node", "dist/main"]
