@@ -4,6 +4,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Prevent npm ci from downloading heavy Chromium binaries
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 COPY package*.json ./
 RUN npm ci
 
