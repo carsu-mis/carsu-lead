@@ -31,6 +31,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
 
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+
     restart: unless-stopped
 
     shm_size: "2gb"
@@ -38,7 +41,7 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: ${BACKEND_PORT:-3001}
+      PORT: 3001
 
       DB_HOST: db
       DB_PORT: 5432
@@ -65,12 +68,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+
     restart: unless-stopped
 
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: ${FRONTEND_PORT:-3000}
+      PORT: 3000
 
 
 volumes:
