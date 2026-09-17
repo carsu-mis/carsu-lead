@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-carsu_lead}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
 
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -43,12 +43,12 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       DB_USERNAME: ${POSTGRES_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: ${DB_PASSWORD:?}
       DB_NAME: ${POSTGRES_DB:-carsu_lead}
 
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?}
 
-      FRONTEND_URL: ${FRONTEND_URL:-/}
+      FRONTEND_URL: ${FRONTEND_URL:?}
 
       HR_EMAIL: ${HR_EMAIL}
       MAIL_USER: ${MAIL_USER}
