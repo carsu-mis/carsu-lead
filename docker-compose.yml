@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-carsu_lead}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
 
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -38,17 +38,17 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3001
+      PORT: ${BACKEND_PORT:-3001}
 
       DB_HOST: db
       DB_PORT: 5432
       DB_USERNAME: ${POSTGRES_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:?}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       DB_NAME: ${POSTGRES_DB:-carsu_lead}
 
-      JWT_SECRET: ${JWT_SECRET:?}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
 
-      FRONTEND_URL: ${FRONTEND_URL:?}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
 
       HR_EMAIL: ${HR_EMAIL}
       MAIL_USER: ${MAIL_USER}
@@ -70,7 +70,7 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3000
+      PORT: ${FRONTEND_PORT:-3000}
 
 
 volumes:
