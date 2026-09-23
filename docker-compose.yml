@@ -1,45 +1,77 @@
+version: "3.8"
+
 services:
+
   db:
-    image: postgres:14
-    restart: always
+    image: postgres:14-alpine
+    restart: unless-stopped
+
     environment:
-      POSTGRES_DB: carsu_lead
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5434:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-carsu_lead}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-carsu_lead}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
   backend:
-    build: ./backend
-    restart: always
-    ports:
-      - "3001:3001"
-    env_file:
-      - ./backend/.env
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    restart: unless-stopped
+
+    shm_size: "2gb"
+
     environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3001
+
       DB_HOST: db
       DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: carsu_lead
-      JWT_SECRET: ${JWT_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL}
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_NAME: ${POSTGRES_DB:-carsu_lead}
+
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
+
       HR_EMAIL: ${HR_EMAIL}
       MAIL_USER: ${MAIL_USER}
       MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
+
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
 
   frontend:
-    build: ./frontend
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+
 
 volumes:
   pgdata:

@@ -4,7 +4,7 @@ import { LnaService } from './lna.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-
+@UseGuards(JwtAuthGuard)
 @Controller('lna')
 export class LnaController {
   constructor(private readonly lnaService: LnaService) {}
